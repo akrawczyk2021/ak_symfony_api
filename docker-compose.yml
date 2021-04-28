@@ -4,9 +4,9 @@ services:
     nginx:
         build:
             context: .
-            dockerfile: dockerfile-nginx
+            dockerfile: ./infrastructure/docker/nginx/Dockerfile
         volumes:
-            - ./symfony/:/var/www/symfony/
+            - .:/var/www/symfony/
         ports:
             - 80:80
         networks:
@@ -14,12 +14,12 @@ services:
     php:
         build:
             context: .
-            dockerfile: dockerfile-php
+            dockerfile: ./infrastructure/docker/php/Dockerfile
         environment: 
             APP_ENV: dev
             DATABASE_URL: mysql://symfonyak:symfonyak@mysql:3306
         volumes: 
-            - ./symfony/:/var/www/symfony/
+            - ./:/var/www/symfony/
         networks:
             - symfony
         depends_on: 
@@ -35,7 +35,7 @@ services:
         ports:
             - 3306:3306
         volumes:
-            - ./db:/var/lib/mysql
+            - ./infrastructure/db:/var/lib/mysql
         networks:
             - symfony
     adminer:
