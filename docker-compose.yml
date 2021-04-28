@@ -1,0 +1,50 @@
+version: '3.1'
+
+services:
+    nginx:
+        build:
+            context: .
+            dockerfile: dockerfile-nginx
+        volumes:
+            - ./symfony/:/var/www/symfony/
+        ports:
+            - 80:80
+        networks:
+            - symfony
+    php:
+        build:
+            context: .
+            dockerfile: dockerfile-php
+        environment: 
+            APP_ENV: dev
+            DATABASE_URL: mysql://symfonyak:symfonyak@mysql:3306
+        volumes: 
+            - ./symfony/:/var/www/symfony/
+        networks:
+            - symfony
+        depends_on: 
+            - mysql
+    mysql:
+        image: mysql
+        command: ['--character-set-server=utf8mb4','--collation-server=utf8mb4_unicode_ci','--default-authentication-plugin=mysql_native_password']
+        environment: 
+            MYSQL_DATABASE: symfonyak
+            MYSQL_USER: symfonyak
+            MYSQL_PASSWORD: symfonyak
+            MYSQL_ROOT_PASSWORD: haslo
+        ports:
+            - 3306:3306
+        volumes:
+            - ./db:/var/lib/mysql
+        networks:
+            - symfony
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - 8080:8080
+        networks:
+            - symfony
+
+networks:
+    symfony:
