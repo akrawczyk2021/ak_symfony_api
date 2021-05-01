@@ -9,14 +9,18 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Phpass\Hash;
 
 class UserController extends AbstractController
 {
     private $em;
-
+    private $passwordlib;
+    
     public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
+        
+        
     }
 
     /**
@@ -27,8 +31,7 @@ class UserController extends AbstractController
 
     public function ListUsers(): JsonResponse
     {
-
-
+        
         $users = $this->em->getRepository(Users::class)->findAll();
 
         $list = [];
@@ -47,12 +50,13 @@ class UserController extends AbstractController
 
     public function AddUsers(Request $request): JsonResponse
     {
+        $hashlib= new Hash();
         $reqdata = json_decode($request->getContent(), true);
 
         $user = new Users();
         $user->setName($reqdata['name']);
         $user->setEmail($reqdata['email']);
-        $user->setPassword("Blank");
+        $user->setPassword($hashlib->hashPassword($reqdata['password']));
         $user->setCreatedate(new DateTime());
 
         $this->em->persist($user);
