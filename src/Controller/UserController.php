@@ -14,13 +14,11 @@ use Phpass\Hash;
 class UserController extends AbstractController
 {
     private $em;
-    private $passwordlib;
     
+
     public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
-        
-        
     }
 
     /**
@@ -31,7 +29,7 @@ class UserController extends AbstractController
 
     public function ListUsers(): JsonResponse
     {
-        
+
         $users = $this->em->getRepository(Users::class)->findAll();
 
         $list = [];
@@ -50,7 +48,7 @@ class UserController extends AbstractController
 
     public function AddUsers(Request $request): JsonResponse
     {
-        $hashlib= new Hash();
+        $hashlib = new Hash();
         $reqdata = json_decode($request->getContent(), true);
 
         $user = new Users();
