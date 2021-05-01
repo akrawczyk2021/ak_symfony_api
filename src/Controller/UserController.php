@@ -8,9 +8,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Exception;
-use JsonException;
-use PHPUnit\Util\Json;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class UserController extends AbstractController
@@ -19,7 +16,7 @@ class UserController extends AbstractController
 
     public function __construct(EntityManagerInterface $em)
     {
-        $this->em=$em;
+        $this->em = $em;
     }
 
     /**
@@ -28,7 +25,7 @@ class UserController extends AbstractController
      * 
      */
 
-    public function ListUsers():JsonResponse
+    public function ListUsers(): JsonResponse
     {
 
 
@@ -36,7 +33,7 @@ class UserController extends AbstractController
 
         $list = [];
         foreach ($users as $user) {
-            $list[] = array("id" => $user->getId(), "name" => $user->getName(), "email" => $user->getEmail(), "password" => $user->getPassword(),"createdate"=>$user->getCreateDate());
+            $list[] = array("id" => $user->getId(), "name" => $user->getName(), "email" => $user->getEmail(), "password" => $user->getPassword(), "createdate" => $user->getCreateDate());
         }
 
         return $this->json($list, 200);
@@ -48,7 +45,7 @@ class UserController extends AbstractController
      * 
      */
 
-    public function AddUsers(Request $request):JsonResponse
+    public function AddUsers(Request $request): JsonResponse
     {
         $reqdata = json_decode($request->getContent(), true);
 
@@ -71,7 +68,7 @@ class UserController extends AbstractController
      * 
      */
 
-    public function DeleteUsers($id):JsonResponse
+    public function DeleteUsers($id): JsonResponse
     {
 
         $user = $this->getDoctrine()->getManager()->getRepository(Users::class)->find($id);
@@ -89,7 +86,7 @@ class UserController extends AbstractController
      * 
      */
 
-    public function UpdateUsers($id, Request $request):JsonResponse
+    public function UpdateUsers($id, Request $request): JsonResponse
     {
 
         $reqdata = json_decode($request->getContent(), true);
