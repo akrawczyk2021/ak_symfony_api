@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ec47f960c1ec274925ff6033fe173849",
+    "content-hash": "e1b0cfb9cc0e368bde513f8e9b6c435c",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -1898,6 +1898,55 @@
                 "source": "https://github.com/php-fig/log/tree/1.1.3"
             },
             "time": "2020-03-23T09:12:05+00:00"
+        },
+        {
+            "name": "rych/phpass",
+            "version": "v2.0.2-p1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rchouinard/phpass.git",
+                "reference": "728bb4a912402593efa0242acba47b07fca64b96"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rchouinard/phpass/zipball/728bb4a912402593efa0242acba47b07fca64b96",
+                "reference": "728bb4a912402593efa0242acba47b07fca64b96",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.7"
+            },
+            "suggest": {
+                "ext-hash": "Enabling the hash extension allows you to combine the included hash adapters with HMAC for an extra layer of security."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Phpass": "library/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ryan Chouinard",
+                    "email": "rchouinard@gmail.com",
+                    "homepage": "http://ryanchouinard.com"
+                }
+            ],
+            "description": "PHP Password Library: Easy, secure password management for PHP",
+            "homepage": "http://rchouinard.github.com/phpass",
+            "keywords": [
+                "cryptography",
+                "password"
+            ],
+            "support": {
+                "issues": "https://github.com/rchouinard/phpass/issues",
+                "source": "https://github.com/rchouinard/phpass/tree/v2.0.2-p1"
+            },
+            "time": "2012-04-25T00:15:13+00:00"
         },
         {
             "name": "sensio/framework-extra-bundle",

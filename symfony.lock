@@ -234,6 +234,9 @@
     "ralouphie/getallheaders": {
         "version": "3.0.3"
     },
+    "rych/phpass": {
+        "version": "v2.0.2-p1"
+    },
     "sebastian/cli-parser": {
         "version": "1.0.1"
     },

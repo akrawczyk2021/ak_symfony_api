@@ -7,8 +7,9 @@ use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Exception;
-use JsonException;
+use Phpass\Hash;
+
+
 
 class UserController extends AbstractController
 {
@@ -23,13 +24,14 @@ class UserController extends AbstractController
 
     public function ListUsers()
     {
-
-
+        
+        $phpassHash = new \Phpass\Hash();
+        
         $users = $this->getDoctrine()->getManager()->getRepository(Users::class)->findAll();
 
         $list = [];
         foreach ($users as $user) {
-            $list[] = array("id" => $user->getId(), "name" => $user->getName(), "email" => $user->getEmail(), "password" => $user->getPassword(),"createdate"=>$user->getCreateDate());
+            $list[] = array("id" => $user->getId(), "name" => $user->getName(), "email" => $user->getEmail(), "password" => $phpassHash->hashPassword($user->getPassword()),"createdate"=>$user->getCreateDate());
         }
 
         return $this->json($list, 200);
