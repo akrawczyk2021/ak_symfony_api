@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\DTOs\UsersDTO;
 use App\Entity\Users;
+use App\Repository\UsersRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -10,15 +12,22 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Phpass\Hash;
+use App\Transformer\SimpleTransformer;
+use App\Validator\UserRequestValidator;
+use Codeception\Util\HttpCode;
+use PDOException;
+use App\Response\UserResponseNoPassword;
+
 
 class UserController extends AbstractController
 {
     private $em;
-    
+    private $usersRepository;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, UsersRepository $usersRepository,)
     {
         $this->em = $em;
+        $this->usersRepository = $usersRepository;
     }
 
     /**
@@ -27,17 +36,29 @@ class UserController extends AbstractController
      * 
      */
 
-    public function ListUsers(): JsonResponse
+    public function ListUsers(SimpleTransformer $simpletransformer): JsonResponse
+    {
+        
+        
+        $list=$simpletransformer->transformCollectionToArray($this->usersRepository->findAll());
+        //$list = SimpleTransformer::transfomObjectToArray($users);
+
+        return $this->json($list, HttpCode::OK);
+    }
+
+    /**
+     * User data
+     * @Route("/users/{id}",name="users_data",methods={"GET"})
+     * 
+     */
+
+    public function DataUsers(Users $usersDTO): JsonResponse
     {
 
-        $users = $this->em->getRepository(Users::class)->findAll();
+        $users = $usersDTO->getName();
 
-        $list = [];
-        foreach ($users as $user) {
-            $list[] = array("id" => $user->getId(), "name" => $user->getName(), "email" => $user->getEmail(), "password" => $user->getPassword(), "createdate" => $user->getCreateDate());
-        }
-
-        return $this->json($list, 200);
+        return $this->json($users, HttpCode::OK);
+        //new UserResponse(id,name)
     }
 
     /**
@@ -50,18 +71,20 @@ class UserController extends AbstractController
     {
         $hashlib = new Hash();
         $reqdata = json_decode($request->getContent(), true);
+        try {
+            $user = new Users();
+            $user->setName($reqdata['name']);
+            $user->setEmail($reqdata['email']);
+            $user->setPassword($hashlib->hashPassword($reqdata['password']));
+            $user->setCreatedate(new DateTime());
 
-        $user = new Users();
-        $user->setName($reqdata['name']);
-        $user->setEmail($reqdata['email']);
-        $user->setPassword($hashlib->hashPassword($reqdata['password']));
-        $user->setCreatedate(new DateTime());
+            $this->em->persist($user);
+            $this->em->flush();
+        } catch (PDOException $ex) {
+            return $this->json($ex->errorInfo, 404);
+        }
 
-        $this->em->persist($user);
-        $this->em->flush();
-
-
-        return $this->json($reqdata, 201);
+        return $this->json($reqdata, HttpCode::CREATED);
     }
 
     /**
@@ -70,16 +93,11 @@ class UserController extends AbstractController
      * 
      */
 
-    public function DeleteUsers($id): JsonResponse
+    public function DeleteUsers(Users $user): JsonResponse
     {
-
-        $user = $this->getDoctrine()->getManager()->getRepository(Users::class)->find($id);
-        if (!$user) {
-            throw $this->createNotFoundException("No data found");
-        }
         $this->em->remove($user);
         $this->em->flush();
-        return $this->json(['users' => $id], 200);
+        return $this->json(['message' => 'deleted'], HttpCode::ACCEPTED);
     }
 
     /**
@@ -88,23 +106,23 @@ class UserController extends AbstractController
      * 
      */
 
-    public function UpdateUsers($id, Request $request): JsonResponse
+    public function UpdateUsers(Users $user, Request $request,UserRequestValidator $uservalidator): JsonResponse
     {
-
-        $reqdata = json_decode($request->getContent(), true);
-        $user = $this->em->getRepository(Users::class)->find($id);
-        $user = $this->em->getRepository(Users::class)->find($id);
-        if (!$user) {
-            throw $this->createNotFoundException("No data found");
+        $requestdata=$uservalidator->decodeContent($request);
+        
+        dump($requestdata);
+        die();
+         if($requestdata!=null){
+            $user->setName($requestdata->getName());
+            $user->setEmail($requestdata->getEmail());
+            $user->setPassword($requestdata->getPassword());
+            $this->em->persist($user);
+            $this->em->flush();
+        }else{
+            throw $this->createNotFoundException("Wrong data format1");
         }
-        $user->setName($reqdata['name']);
-        $user->setEmail($reqdata['email']);
-        $user->setPassword("Blank");
-
-        $this->em->persist($user);
-        $this->em->flush();
 
 
-        return $this->json($reqdata, 200);
+        return $this->json($requestdata, HttpCode::OK);
     }
 }
