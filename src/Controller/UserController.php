@@ -22,7 +22,7 @@ class UserController extends AbstractController
     private $em;
     private $usersRepository;
 
-    public function __construct(EntityManagerInterface $em, UsersRepository $usersRepository,)
+    public function __construct(EntityManagerInterface $em, UsersRepository $usersRepository)
     {
         $this->em = $em;
         $this->usersRepository = $usersRepository;
@@ -68,14 +68,14 @@ class UserController extends AbstractController
         if($requestdata!=null)
         {
         try {
-            $user = new Users();
-            $user->setName($requestdata->getName());
-            $user->setEmail($requestdata->getEmail());
-            $user->setPassword($hash->hashPassword($requestdata->getPassword()));
-            $user->setCreatedate(new DateTime());
-            $this->em->persist($user);
-            $this->em->flush();
-           } catch (PDOException $ex) {
+                $user = new Users();
+                $user->setName($requestdata->getName());
+                $user->setEmail($requestdata->getEmail());
+                $user->setPassword($hash->hashPassword($requestdata->getPassword()));
+                $user->setCreatedate(new DateTime());
+                $this->em->persist($user);
+                $this->em->flush();
+            } catch (PDOException $ex) {
                 return $this->json($ex->errorInfo, 404);
             }
                 return $this->json($requestdata->getDtoAsArray(), HttpCode::CREATED);
@@ -95,8 +95,8 @@ class UserController extends AbstractController
     {
         if ($user!=null) {
             $this->em->remove($user);
-        $this->em->flush();
-        return $this->json(['message' => 'deleted'], HttpCode::OK);
+            $this->em->flush();
+            return $this->json(['message' => 'deleted'], HttpCode::OK);
         } else {
             return $this->json(['message' => 'Wrong user ID'], HttpCode::BAD_REQUEST);
         }
