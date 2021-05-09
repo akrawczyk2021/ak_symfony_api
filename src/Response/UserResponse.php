@@ -20,20 +20,25 @@ class UserResponse{
     }
 
     public function getName(): string{
-        return $this->getName();
+        return $this->name;
     }
 
     public function getEmail(): string{
-        return $this->getEmail();
+        return $this->email;
     }
 
     public function getPassword(): string{
-        return $this->getPassword();
+        return $this->password;
     }
     
+    public function getDtoAsArray()
+    {
+        return ['name'=>$this->name,'mail'=>$this->email];
+    }
+
     public function __toString()
     {
-        return json_encode(['name'=>$this->name,'mail'=>$this->email]);
+        return $this->name." ".$this->email;
     }
 
 }

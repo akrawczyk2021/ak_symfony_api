@@ -84,7 +84,7 @@ class UserController extends AbstractController
             return $this->json($ex->errorInfo, 404);
         }
 
-        return $this->json($requestdata, HttpCode::CREATED);
+        return $this->json($requestdata->getDtoAsArray(), HttpCode::CREATED);
     }else
     {
         throw $this->createNotFoundException("Wrong data format");
@@ -111,20 +111,20 @@ class UserController extends AbstractController
      * 
      */
 
-    public function UpdateUsers(Users $user, Request $request,SimpleTransformer $transformer,UserRequestValidator $validator): JsonResponse
+    public function UpdateUsers(Users $user, Request $request,SimpleTransformer $transformer,UserRequestValidator $validator)
     {
         $requestdata=$transformer->decodeJsonContent($request,$validator);
-        
+               
         if($requestdata!=null)
         {
-            $user->setName($requestdata->getName());
-            $user->setEmail($requestdata->getEmail());
-            $user->setPassword($requestdata->getPassword());
+            $user->setName('abc');
+            $user->setEmail('abc');
+            $user->setPassword('abc');
             $this->em->persist($user);
             $this->em->flush();
         }else{
             throw $this->createNotFoundException("Wrong data format");
         }
-        return $this->json($requestdata, HttpCode::OK);
+        return $this->json($requestdata->getDtoAsArray(), HttpCode::OK);
     }
 }
