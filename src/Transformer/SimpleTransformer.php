@@ -33,7 +33,8 @@ class SimpleTransformer
         {
             $datarequest = json_decode($request->getContent(), true);
             if($validator->isJsonParamsValid($datarequest)
-                && $validator->isPasswordValid($datarequest['password']))
+                && $validator->isPasswordValid($datarequest['password']) 
+                && $validator->isEmailUnique($datarequest['email']))
                 {
                     return new UserResponse($datarequest['name'], $datarequest['email'], $datarequest['password']);
                 }

@@ -19,15 +19,18 @@ class UserResponse{
         $this->password=$password;
     }
 
-    public function getName(): string{
+    public function getName(): string
+    {
         return $this->name;
     }
 
-    public function getEmail(): string{
+    public function getEmail(): string
+    {
         return $this->email;
     }
 
-    public function getPassword(): string{
+    public function getPassword(): string
+    {
         return $this->password;
     }
     

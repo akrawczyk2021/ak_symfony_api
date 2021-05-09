@@ -34,13 +34,9 @@ class UserController extends AbstractController
      * 
      */
 
-    public function ListUsers(SimpleTransformer $simpletransformer): JsonResponse
+    public function listUsers(SimpleTransformer $simpletransformer): JsonResponse
     {
-        
-        
         $list=$simpletransformer->transformCollectionToArray($this->usersRepository->findAll());
-        //$list = SimpleTransformer::transfomObjectToArray($users);
-
         return $this->json($list, HttpCode::OK);
     }
 
@@ -50,13 +46,13 @@ class UserController extends AbstractController
      * 
      */
 
-    public function DataUsers(Users $usersDTO): JsonResponse
+    public function userDetails(Users $user): JsonResponse
     {
-
-        $users = $usersDTO->getName();
-
-        return $this->json($users, HttpCode::OK);
-        //new UserResponse(id,name)
+        if ($user!=null) {
+            $user=new UserResponse($user->getName(),$user->getEmail(),$user->getPassword());
+        }
+        return $this->json($user->getDtoAsArray(), HttpCode::OK);
+        
     }
 
     /**
@@ -65,7 +61,7 @@ class UserController extends AbstractController
      * 
      */
 
-    public function AddUsers(Request $request,SimpleTransformer $transformer,UserRequestValidator $validator): JsonResponse
+    public function addUsers(Request $request,SimpleTransformer $transformer,UserRequestValidator $validator): JsonResponse
     {
         $hash=new Hash();
         $requestdata=$transformer->decodeJsonContent($request,$validator);
@@ -77,18 +73,15 @@ class UserController extends AbstractController
             $user->setEmail($requestdata->getEmail());
             $user->setPassword($hash->hashPassword($requestdata->getPassword()));
             $user->setCreatedate(new DateTime());
-
             $this->em->persist($user);
             $this->em->flush();
-        } catch (PDOException $ex) {
-            return $this->json($ex->errorInfo, 404);
+           } catch (PDOException $ex) {
+                return $this->json($ex->errorInfo, 404);
+            }
+                return $this->json($requestdata->getDtoAsArray(), HttpCode::CREATED);
+        } else {
+            throw $this->createNotFoundException("Wrong data format");
         }
-
-        return $this->json($requestdata->getDtoAsArray(), HttpCode::CREATED);
-    }else
-    {
-        throw $this->createNotFoundException("Wrong data format");
-    }
 
     }
 
@@ -100,9 +93,14 @@ class UserController extends AbstractController
 
     public function DeleteUsers(Users $user): JsonResponse
     {
-        $this->em->remove($user);
+        if ($user!=null) {
+            $this->em->remove($user);
         $this->em->flush();
-        return $this->json(['message' => 'deleted'], HttpCode::ACCEPTED);
+        return $this->json(['message' => 'deleted'], HttpCode::OK);
+        } else {
+            return $this->json(['message' => 'Wrong user ID'], HttpCode::BAD_REQUEST);
+        }
+        
     }
 
     /**
@@ -117,12 +115,12 @@ class UserController extends AbstractController
                
         if($requestdata!=null)
         {
-            $user->setName('abc');
-            $user->setEmail('abc');
-            $user->setPassword('abc');
+            $user->setName($requestdata->getName());
+            $user->setEmail($requestdata->getEmail());
+            $user->setPassword($requestdata->getPassword());
             $this->em->persist($user);
             $this->em->flush();
-        }else{
+        } else {
             throw $this->createNotFoundException("Wrong data format");
         }
         return $this->json($requestdata->getDtoAsArray(), HttpCode::OK);
