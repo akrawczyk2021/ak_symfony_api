@@ -1,7 +1,9 @@
 <?php
 namespace App\Tests;
 
-use Symfony\Component\HttpKernel\Exception\HttpException;
+use App\Repository\UsersRepository;
+use App\Validator\UserRequestValidator;
+use PHPUnit\Framework\MockObject\MockClass;
 
 class UserRequestValidatorTest extends \Codeception\Test\Unit
 {
@@ -24,8 +26,8 @@ class UserRequestValidatorTest extends \Codeception\Test\Unit
     // tests
     public function testValidatePassword()
     {
-        //$users=$this->make('UsersRepository');
-        //$validate=new UserRequestValidator();
+        //$user=$this->make('UsersRepository');
+        //$validate=new UserRequestValidator($users);
         //$validate->isPasswordvalid("test");
         //$this->assertTrue($validate->isPasswordValid("Az1"));
         // $this->expectException($validate->isPasswordvalid("a"));
