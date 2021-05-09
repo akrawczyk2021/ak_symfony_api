@@ -2,62 +2,54 @@
 
 namespace App\Validator;
 
-use App\Response\UserResponse;
 use Codeception\Util\HttpCode;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use App\Response\UserResponseNoPassword;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
-
-
-use Exception;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class UserRequestValidator{
 
-    public function decodeContent(Request $request){
-        if($this->isValid($request)){
-            $datarequest=json_decode($request->getContent(),true);
-            return 2;
-            //return new UserResponseNoPassword($datarequest['name'],$datarequest['email']);
-        }else{
-            return null;
-        }
-    }
-
-    public function isValid(Request $request): bool{
+    public function isJsonRequestTypeValid(Request $request): bool{
         
-        if($request->getContentType()=='json'){
-            if ($this->validateJsonParams(json_decode($request->getContent(),true))){
-                return true;
-            }else{
-                //throw $this->createNotFoundException("Wrong data format");    
-                return false;
-            }
-        }else{
-            //throw $this->createNotFoundException("Wrong data format");
-            return false;
+        if($request->getContentType()=='json')
+        {
+             return true;
+        }
+        else
+        {
+             throw new HttpException(HttpCode::BAD_REQUEST,"Wrog data format"); 
         }
     }
 
-    private function validateJsonParams(array $params): bool{
-        if(empty($params['name'])){
-            throw new HttpException(404,"Name cannot be empty");
-            return false;
+    public function isJsonParamsValid(array $params): bool{
+        if(empty($params['name']))
+        {
+            throw new HttpException(HttpCode::BAD_REQUEST,"Name cannot be empty");
         }
-        if(empty($params['mail'])){
-        throw new HttpException(404,"Email cannot be empty");
-            return false;
+        if(empty($params['email']))
+        {
+        throw new HttpException(HttpCode::BAD_REQUEST,"Email cannot be empty");
         }
-        if(empty($params['password'])){
-            throw new HttpException(404,"Password cannot be empty");
-            return false;
+        if(empty($params['password']))
+        {
+            throw new HttpException(HttpCode::BAD_REQUEST,"Password cannot be empty");
         }
         
         return true;
     }
 
+    public function isPasswordValid(string $password): bool
+    {
+        $pattern='/(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])/';
+        if(preg_match($pattern,$password)==1){
+            return true;    
+        }else{
+            
+            throw new HttpException(HttpCode::BAD_REQUEST,"Password must contain at least 1 small letter, 1 big, 1 number");
+            return false;
+        }
+
+        
+    }
+
     
 }
-
-?>

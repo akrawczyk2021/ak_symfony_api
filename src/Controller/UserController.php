@@ -2,22 +2,20 @@
 
 namespace App\Controller;
 
-use App\DTOs\UsersDTO;
 use App\Entity\Users;
 use App\Repository\UsersRepository;
+use App\Response\UserResponse;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Phpass\Hash;
 use App\Transformer\SimpleTransformer;
 use App\Validator\UserRequestValidator;
 use Codeception\Util\HttpCode;
 use PDOException;
-use App\Response\UserResponseNoPassword;
-
+use Phpass\Hash;
 
 class UserController extends AbstractController
 {
@@ -67,15 +65,17 @@ class UserController extends AbstractController
      * 
      */
 
-    public function AddUsers(Request $request): JsonResponse
+    public function AddUsers(Request $request,SimpleTransformer $transformer,UserRequestValidator $validator): JsonResponse
     {
-        $hashlib = new Hash();
-        $reqdata = json_decode($request->getContent(), true);
+        $hash=new Hash();
+        $requestdata=$transformer->decodeJsonContent($request,$validator);
+        if($requestdata!=null)
+        {
         try {
             $user = new Users();
-            $user->setName($reqdata['name']);
-            $user->setEmail($reqdata['email']);
-            $user->setPassword($hashlib->hashPassword($reqdata['password']));
+            $user->setName($requestdata->getName());
+            $user->setEmail($requestdata->getEmail());
+            $user->setPassword($hash->hashPassword($requestdata->getPassword()));
             $user->setCreatedate(new DateTime());
 
             $this->em->persist($user);
@@ -84,7 +84,12 @@ class UserController extends AbstractController
             return $this->json($ex->errorInfo, 404);
         }
 
-        return $this->json($reqdata, HttpCode::CREATED);
+        return $this->json($requestdata, HttpCode::CREATED);
+    }else
+    {
+        throw $this->createNotFoundException("Wrong data format");
+    }
+
     }
 
     /**
@@ -106,23 +111,20 @@ class UserController extends AbstractController
      * 
      */
 
-    public function UpdateUsers(Users $user, Request $request,UserRequestValidator $uservalidator): JsonResponse
+    public function UpdateUsers(Users $user, Request $request,SimpleTransformer $transformer,UserRequestValidator $validator): JsonResponse
     {
-        $requestdata=$uservalidator->decodeContent($request);
+        $requestdata=$transformer->decodeJsonContent($request,$validator);
         
-        dump($requestdata);
-        die();
-         if($requestdata!=null){
+        if($requestdata!=null)
+        {
             $user->setName($requestdata->getName());
             $user->setEmail($requestdata->getEmail());
             $user->setPassword($requestdata->getPassword());
             $this->em->persist($user);
             $this->em->flush();
         }else{
-            throw $this->createNotFoundException("Wrong data format1");
+            throw $this->createNotFoundException("Wrong data format");
         }
-
-
         return $this->json($requestdata, HttpCode::OK);
     }
 }

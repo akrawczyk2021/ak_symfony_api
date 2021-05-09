@@ -7,8 +7,11 @@ namespace App\Response;
 class UserResponseNoPassword{
 
     private $ErrorMessage;
+    private $name;
+    private $email;
+    private $password;
 
-    public function __construct(private string $name, private string $email,private string $password)
+    public function __construct(string $name, string $email,string $password)
     {
         
     }
@@ -22,7 +25,7 @@ class UserResponseNoPassword{
     }
 
     public function getPassword(): string{
-        return $this-getPassword();
+        return $this->getPassword();
     }
 
     public function getErrorMessage(): string{
