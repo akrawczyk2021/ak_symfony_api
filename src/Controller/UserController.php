@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Transformer\SimpleTransformer;
 use App\Validator\UserRequestValidator;
 use Codeception\Util\HttpCode;
-use PDOException;
+use Exception;
 use Phpass\Hash;
 
 class UserController extends AbstractController
@@ -75,7 +75,7 @@ class UserController extends AbstractController
                 $user->setCreatedate(new DateTime());
                 $this->em->persist($user);
                 $this->em->flush();
-            } catch (PDOException $ex) {
+            } catch (Exception $ex) {
                 return $this->json($ex->errorInfo, 404);
             }
                 return $this->json($requestdata->getDtoAsArray(), HttpCode::CREATED);
