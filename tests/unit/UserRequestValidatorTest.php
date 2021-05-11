@@ -26,14 +26,10 @@ class UserRequestValidatorTest extends \Codeception\Test\Unit
     // tests
     public function testValidatePassword()
     {
-        //$user=$this->make('UsersRepository');
-        //$validate=new UserRequestValidator($users);
-        //$validate->isPasswordvalid("test");
-        //$this->assertTrue($validate->isPasswordValid("Az1"));
-        // $this->expectException($validate->isPasswordvalid("a"));
-        // $this->expectException($validate->isPasswordvalid("1"));
-        // $this->expectException($validate->isPasswordvalid("Z"));
-        // $this->expectException($validate->isPasswordvalid(""));
+        $users=$this->createMock(UsersRepository::class);
+        $validate=new UserRequestValidator($users);
+        $this->assertTrue($validate->isPasswordValid("Az1"));
+        
     }
 
 }
