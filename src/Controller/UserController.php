@@ -33,10 +33,9 @@ class UserController extends AbstractController
      * @Route("/users",name="users_list",methods={"GET"})
      * 
      */
-
     public function listUsers(SimpleTransformer $simpletransformer): JsonResponse
     {
-        $list=$simpletransformer->transformCollectionToArray($this->usersRepository->findAll());
+        $list = $simpletransformer->transformCollectionToArray($this->usersRepository->findAll());
         return $this->json($list, HttpCode::OK);
     }
 
@@ -45,14 +44,12 @@ class UserController extends AbstractController
      * @Route("/users/{id}",name="users_data",methods={"GET"})
      * 
      */
-
     public function userDetails(Users $user): JsonResponse
     {
-        if ($user!=null) {
-            $user=new UserResponse($user->getName(),$user->getEmail(),$user->getPassword());
+        if ($user != null) {
+            $user = new UserResponse($user->getName(), $user->getEmail(), $user->getPassword());
         }
         return $this->json($user->getDtoAsArray(), HttpCode::OK);
-        
     }
 
     /**
@@ -60,14 +57,12 @@ class UserController extends AbstractController
      * @Route("/users",name="users_create",methods={"POST"})
      * 
      */
-
-    public function addUsers(Request $request,SimpleTransformer $transformer,UserRequestValidator $validator): JsonResponse
+    public function addUsers(Request $request, SimpleTransformer $transformer, UserRequestValidator $validator,Hash $hash): JsonResponse
     {
-        $hash=new Hash();
-        $requestdata=$transformer->decodeJsonContent($request,$validator);
-        if($requestdata!=null)
-        {
-        try {
+        //$hash = new Hash();
+        $requestdata = $transformer->decodeJsonContent($request, $validator);
+        if ($requestdata != null) {
+            try {
                 $user = new Users();
                 $user->setName($requestdata->getName());
                 $user->setEmail($requestdata->getEmail());
@@ -78,11 +73,10 @@ class UserController extends AbstractController
             } catch (Exception $ex) {
                 return $this->json($ex->errorInfo, 404);
             }
-                return $this->json($requestdata->getDtoAsArray(), HttpCode::CREATED);
+            return $this->json($requestdata->getDtoAsArray(), HttpCode::CREATED);
         } else {
             throw $this->createNotFoundException("Wrong data format");
         }
-
     }
 
     /**
@@ -90,17 +84,15 @@ class UserController extends AbstractController
      * @Route("/users/{id}",name="users_delete",methods={"DELETE"})
      * 
      */
-
     public function DeleteUsers(Users $user): JsonResponse
     {
-        if ($user!=null) {
+        if ($user != null) {
             $this->em->remove($user);
             $this->em->flush();
             return $this->json(['message' => 'deleted'], HttpCode::OK);
         } else {
             return $this->json(['message' => 'Wrong user ID'], HttpCode::BAD_REQUEST);
         }
-        
     }
 
     /**
@@ -108,13 +100,11 @@ class UserController extends AbstractController
      * @Route("/users/{id}",name="users_update",methods={"PUT"})
      * 
      */
-
-    public function UpdateUsers(Users $user, Request $request,SimpleTransformer $transformer,UserRequestValidator $validator)
+    public function UpdateUsers(Users $user, Request $request, SimpleTransformer $transformer, UserRequestValidator $validator)
     {
-        $requestdata=$transformer->decodeJsonContent($request,$validator);
-               
-        if($requestdata!=null)
-        {
+        $requestdata = $transformer->decodeJsonContent($request, $validator);
+
+        if ($requestdata != null) {
             $user->setName($requestdata->getName());
             $user->setEmail($requestdata->getEmail());
             $user->setPassword($requestdata->getPassword());
