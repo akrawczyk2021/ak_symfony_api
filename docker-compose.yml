@@ -6,7 +6,7 @@ services:
             context: .
             dockerfile: ./infrastructure/docker/nginx/Dockerfile
         volumes:
-            - .:/var/www/symfony/
+            - ./:/var/www/symfony/
         ports:
             - 80:80
         networks:
@@ -35,7 +35,7 @@ services:
         ports:
             - 3306:3306
         volumes:
-            - ./infrastructure/db:/var/lib/mysql
+            - ./infrastructure/db:/var/lib/mysql:delegated
         networks:
             - symfony
     adminer:
