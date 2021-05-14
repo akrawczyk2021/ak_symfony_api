@@ -34,5 +34,4 @@ class UserDataValidator
             return true;
         }
     }
-
 }

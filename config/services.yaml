@@ -26,4 +26,9 @@ services:
     App\Controller\:
         resource: '../src/Controller/'
         tags: ['controller.service_arguments']
-            
+    create_user_param_converter:         
+          class: App\ParamConverter\CreateUserConverter
+          arguments:
+              - '@App\Validator\UserDataValidator'  
+          tags:           
+              - { name: request.param_converter, priority: -2, converter: create_user_param_converter }         
