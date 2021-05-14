@@ -24,23 +24,14 @@ class CreateUserConverter implements ParamConverterInterface
     {
         $content = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
-        $userdto = new CreateUser();
-        if ($this->validator->isValidName($content['name'])) {
-            $userdto->setName($content['name']);
+        if (
+            $this->validator->isValidName($content['name'])
+            && $this->validator->isValidEmail($content['email'])
+            && $this->validator->isValidPassword($content['password'])
+        ) {
+            $userdto = new CreateUser($content['name'], $content['email'], $content['password']);
         } else {
-            throw new BadRequestException("Name cannot be empty");
-        }
-
-        if ($this->validator->isValidEmail($content['email'])) {
-            $userdto->setEmail($content['email']);
-        } else {
-            throw new BadRequestException("Email cannot be empty");
-        }
-
-        if ($this->validator->isValidPassword($content['password'])) {
-            $userdto->setPassword($content['password']);
-        } else {
-            throw new BadRequestException("Wrong password");
+            throw new BadRequestException("Wrong data");
         }
 
         $request->attributes->set($configuration->getName(), $userdto);
