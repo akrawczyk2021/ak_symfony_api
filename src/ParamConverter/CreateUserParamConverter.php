@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\ParamConverter;
 
+use App\Repository\UserRepository;
 use App\Request\CreateUser;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
@@ -14,10 +15,12 @@ use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 class CreateUserConverter implements ParamConverterInterface
 {
     private UserDataValidator $validator;
+    private UserRepository $userRepository;
 
-    public function __construct(UserDataValidator $validator)
+    public function __construct(UserDataValidator $validator, UserRepository $userRepository)
     {
         $this->validator = $validator;
+        $this->userRepository = $userRepository;
     }
 
     public function apply(Request $request, ParamConverter $configuration)
@@ -29,6 +32,7 @@ class CreateUserConverter implements ParamConverterInterface
             && $this->validator->isValidEmail($content['email'])
             && $this->validator->isValidPassword($content['password'])
         ) {
+            $this->ensureEmailIsUnique($content['email']);
             $userdto = new CreateUser($content['name'], $content['email'], $content['password']);
         } else {
             throw new BadRequestException("Wrong data");
@@ -39,15 +43,13 @@ class CreateUserConverter implements ParamConverterInterface
 
     public function supports(ParamConverter $configuration)
     {
+        return CreateUser::class === $configuration->getClass();
+    }
 
-        if (null === $configuration->getClass()) {
-            return false;
-        }
-
-        if ("App\Request\CreateUser" !== $configuration->getClass()) {
-            return false;
-        } else {
-            return true;
+    public function ensureEmailIsUnique(string $email): void
+    {
+        if ($this->userRepository->findOneByEmail($email) === null) {
+            throw new BadRequestException("This email is already used");
         }
     }
 }

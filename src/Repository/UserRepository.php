@@ -2,15 +2,20 @@
 
 namespace App\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 
-class UserRepository extends EntityRepository
+class UserRepository 
 {
-    public function findOneByEmail(string $email)
+    private EntityManagerInterface $entityManager;
+
+    public function __construct(EntityManagerInterface $entitymanager)
     {
-        return $this->getEntityManager()
-            ->createQuery("select u from App:User u where u.email=:email")
-            ->setParameter('email', $email)
-            ->getResult();
+        $this->entityManager = $entitymanager;
+    }
+
+    public function findOneByEmail(string $email): ?User
+    {
+        return $this->entityManager->getRepository(User::class)->findOneBy(['email'=>$email]);
     }
 }

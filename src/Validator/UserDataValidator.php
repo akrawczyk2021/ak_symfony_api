@@ -37,13 +37,4 @@ class UserDataValidator
         }
     }
 
-    public function isEmailExists(string $email, UserRepository $userRepository): bool
-    {
-        $email = $userRepository->findOneByEmail($email);
-        if (!$email) {
-            return false;
-        } else {
-            return true;
-        }
-    }
 }
