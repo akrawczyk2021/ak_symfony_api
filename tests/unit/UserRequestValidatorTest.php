@@ -2,9 +2,7 @@
 
 namespace App\Tests;
 
-use App\Repository\UsersRepository;
 use App\Validator\UserDataValidator;
-use PHPUnit\Framework\MockObject\MockClass;
 
 class UserRequestValidatorTest extends \Codeception\Test\Unit
 {

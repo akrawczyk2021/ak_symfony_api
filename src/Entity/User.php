@@ -8,6 +8,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * @ORM\Entity()
  * @ORM\Table(name="User")
+ * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
 class User implements UserInterface
 {
@@ -90,7 +91,7 @@ class User implements UserInterface
 
         return $this;
     }
-    
+
     public function __toString(): string
     {
         return $this->name . " " . $this->email;

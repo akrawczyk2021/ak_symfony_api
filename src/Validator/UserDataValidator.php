@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Validator;
 
+use App\Repository\UserRepository;
+
 class UserDataValidator
 {
     const PATTERN = '/(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])/';
@@ -29,6 +31,16 @@ class UserDataValidator
     public function isValidPassword(string $password): bool
     {
         if (empty($password) || preg_match(self::PATTERN, $password) == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public function isEmailExists(string $email, UserRepository $userRepository): bool
+    {
+        $email = $userRepository->findOneByEmail($email);
+        if (!$email) {
             return false;
         } else {
             return true;

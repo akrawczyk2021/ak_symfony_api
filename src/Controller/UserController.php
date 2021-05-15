@@ -14,7 +14,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-
 class UserController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
