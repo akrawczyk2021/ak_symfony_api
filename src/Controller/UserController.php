@@ -1,110 +1,49 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
-use App\Entity\Users;
+use App\Entity\User;
+use App\Request\CreateUser;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Phpass\Hash;
+use Symfony\Component\HttpFoundation\Response;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserController extends AbstractController
 {
-    private $em;
-    
+    private EntityManagerInterface $entityManager;
+    private UserPasswordEncoderInterface $encoder;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $entityManager, UserPasswordEncoderInterface $encoder)
     {
-        $this->em = $em;
-    }
-
-    /**
-     * User List
-     * @Route("/users",name="users_list",methods={"GET"})
-     * 
-     */
-
-    public function ListUsers(): JsonResponse
-    {
-
-        $users = $this->em->getRepository(Users::class)->findAll();
-
-        $list = [];
-        foreach ($users as $user) {
-            $list[] = array("id" => $user->getId(), "name" => $user->getName(), "email" => $user->getEmail(), "password" => $user->getPassword(), "createdate" => $user->getCreateDate());
-        }
-
-        return $this->json($list, 200);
+        $this->entityManager = $entityManager;
+        $this->encoder = $encoder;
     }
 
     /**
      * Create User
      * @Route("/users",name="users_create",methods={"POST"})
-     * 
+     * @ParamConverter("createuser", class="App\Request\CreateUser")
      */
-
-    public function AddUsers(Request $request): JsonResponse
+    public function addUsers(CreateUser $createuser): Response
     {
-        $hashlib = new Hash();
-        $reqdata = json_decode($request->getContent(), true);
-
-        $user = new Users();
-        $user->setName($reqdata['name']);
-        $user->setEmail($reqdata['email']);
-        $user->setPassword($hashlib->hashPassword($reqdata['password']));
-        $user->setCreatedate(new DateTime());
-
-        $this->em->persist($user);
-        $this->em->flush();
-
-
-        return $this->json($reqdata, 201);
-    }
-
-    /**
-     * Delete User
-     * @Route("/users/{id}",name="users_delete",methods={"DELETE"})
-     * 
-     */
-
-    public function DeleteUsers($id): JsonResponse
-    {
-
-        $user = $this->getDoctrine()->getManager()->getRepository(Users::class)->find($id);
-        if (!$user) {
-            throw $this->createNotFoundException("No data found");
+        try {
+            $user = new User();
+            $user->setName($createuser->getName());
+            $user->setEmail($createuser->getEmail());
+            $user->setPassword($this->encoder->encodePassword($user, $createuser->getPassword()));
+            $user->setCreatedate(new DateTime());
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+        } catch (\Exception $ex) {
+            return $this->json($ex->errorInfo, 404);
         }
-        $this->em->remove($user);
-        $this->em->flush();
-        return $this->json(['users' => $id], 200);
-    }
 
-    /**
-     * Update User
-     * @Route("/users/{id}",name="users_update",methods={"PUT"})
-     * 
-     */
-
-    public function UpdateUsers($id, Request $request): JsonResponse
-    {
-
-        $reqdata = json_decode($request->getContent(), true);
-        $user = $this->em->getRepository(Users::class)->find($id);
-        $user = $this->em->getRepository(Users::class)->find($id);
-        if (!$user) {
-            throw $this->createNotFoundException("No data found");
-        }
-        $user->setName($reqdata['name']);
-        $user->setEmail($reqdata['email']);
-        $user->setPassword("Blank");
-
-        $this->em->persist($user);
-        $this->em->flush();
-
-
-        return $this->json($reqdata, 200);
+        return $this->json([], Response::HTTP_CREATED);
     }
 }
