@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Validator;
 
-use App\Repository\UserRepository;
-
 class UserDataValidator
 {
     const PATTERN = '/(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])/';
@@ -36,5 +34,4 @@ class UserDataValidator
             return true;
         }
     }
-
 }

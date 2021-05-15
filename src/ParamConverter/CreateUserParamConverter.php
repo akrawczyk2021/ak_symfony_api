@@ -27,18 +27,17 @@ class CreateUserConverter implements ParamConverterInterface
     {
         $content = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
-        if (
-            $this->validator->isValidName($content['name'])
+        if ($this->validator->isValidName($content['name'])
             && $this->validator->isValidEmail($content['email'])
             && $this->validator->isValidPassword($content['password'])
         ) {
             $this->ensureEmailIsUnique($content['email']);
-            $userdto = new CreateUser($content['name'], $content['email'], $content['password']);
+            $userDTO = new CreateUser($content['name'], $content['email'], $content['password']);
         } else {
             throw new BadRequestException("Wrong data");
         }
 
-        $request->attributes->set($configuration->getName(), $userdto);
+        $request->attributes->set($configuration->getName(), $userDTO);
     }
 
     public function supports(ParamConverter $configuration)
