@@ -46,4 +46,12 @@ class UserController extends AbstractController
 
         return $this->json([], Response::HTTP_CREATED);
     }
+
+    /** 
+     * Show User
+     */
+    public function showUser(): Response
+    {
+        return $this->json([]);
+    }
 }
