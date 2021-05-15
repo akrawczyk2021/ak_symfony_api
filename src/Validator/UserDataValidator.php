@@ -28,7 +28,7 @@ class UserDataValidator
 
     public function isValidPassword(string $password): bool
     {
-        if (empty($password) && preg_match(self::PATTERN, $password) == 1) {
+        if (empty($password) || preg_match(self::PATTERN, $password) == false) {
             return false;
         } else {
             return true;
