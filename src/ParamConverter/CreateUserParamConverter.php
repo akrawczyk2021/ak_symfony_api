@@ -48,7 +48,7 @@ class CreateUserConverter implements ParamConverterInterface
 
     public function ensureEmailIsUnique(string $email): void
     {
-        if ($this->userRepository->findOneByEmail($email) === null) {
+        if ($this->userRepository->findOneByEmail($email) !== null) {
             throw new BadRequestException("This email is already used");
         }
     }
