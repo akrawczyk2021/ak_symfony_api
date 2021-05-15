@@ -103,14 +103,13 @@ class User implements UserInterface
 
     public function getSalt(): void
     {
-        return;
     }
+
     public function getRoles(): void
     {
-        return;
     }
+
     public function eraseCredentials(): void
     {
-        return;
     }
 }
