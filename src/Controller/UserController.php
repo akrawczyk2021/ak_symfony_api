@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\Users;
+use App\Entity\User;
 use App\Request\CreateUser;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -12,14 +12,18 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+
 
 class UserController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
+    private UserPasswordEncoderInterface $encoder;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager, UserPasswordEncoderInterface $encoder)
     {
         $this->entityManager = $entityManager;
+        $this->encoder = $encoder;
     }
 
     /**
@@ -30,10 +34,10 @@ class UserController extends AbstractController
     public function addUsers(CreateUser $createuser): Response
     {
         try {
-            $user = new Users();
+            $user = new User();
             $user->setName($createuser->getName());
             $user->setEmail($createuser->getEmail());
-            $user->setPassword($createuser->getPassword());
+            $user->setPassword($this->encoder->encodePassword($user, $createuser->getPassword()));
             $user->setCreatedate(new DateTime());
             $this->entityManager->persist($user);
             $this->entityManager->flush();

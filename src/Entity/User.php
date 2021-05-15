@@ -3,12 +3,13 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity()
- * @ORM\Table(name="Users")
+ * @ORM\Table(name="User")
  */
-class Users
+class User implements UserInterface
 {
     /**
      * @ORM\Id
@@ -89,8 +90,27 @@ class Users
 
         return $this;
     }
-    public function __toString():string
+    
+    public function __toString(): string
     {
-        return $this->name." ".$this->email;
+        return $this->name . " " . $this->email;
+    }
+
+    public function getUsername(): string
+    {
+        return $this->name;
+    }
+
+    public function getSalt(): void
+    {
+        return;
+    }
+    public function getRoles(): void
+    {
+        return;
+    }
+    public function eraseCredentials(): void
+    {
+        return;
     }
 }
