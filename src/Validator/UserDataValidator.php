@@ -23,6 +23,4 @@ class UserDataValidator
     {
         return !empty($password) && preg_match(self::PATTERN, $password) === 1;
     }
-
-
 }

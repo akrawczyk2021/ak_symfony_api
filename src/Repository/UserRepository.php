@@ -16,6 +16,16 @@ class UserRepository
 
     public function findOneByEmail(string $email): ?User
     {
-        return $this->entityManager->getRepository(User::class)->findOneBy(['email'=>$email]);
+        return $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+    }
+
+    public function find(int $id): ?User
+    {
+        return $this->entityManager->getRepository(User::class)->find($id);
+    }
+
+    public function findAllIdNameOnly(): ?array
+    {
+        return $this->entityManager->getRepository(User::class)->findAll();
     }
 }
