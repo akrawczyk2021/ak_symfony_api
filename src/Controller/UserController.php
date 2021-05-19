@@ -12,6 +12,7 @@ use App\Transformer\SimpleUserListTransformer;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -47,7 +48,7 @@ class UserController extends AbstractController
             $this->entityManager->persist($user);
             $this->entityManager->flush();
         } catch (\Exception $ex) {
-            return $this->json($ex->errorInfo, Response::HTTP_BAD_REQUEST);
+            throw new BadRequestException("Database insert error");
         }
 
         return $this->json([], Response::HTTP_CREATED);

@@ -22,11 +22,6 @@ class ShowUser
         return $this->id;
     }
 
-    public function setId(int $id)
-    {
-        $this->id = $id;
-    }
-
     public function getName(): string
     {
         return $this->name;
@@ -35,15 +30,5 @@ class ShowUser
     public function getEmail(): string
     {
         return $this->email;
-    }
-
-    public function setName(string $name)
-    {
-        $this->name = $name;
-    }
-
-    public function setEmail(string $email)
-    {
-        $this->email = $email;
     }
 }
