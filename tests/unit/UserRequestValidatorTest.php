@@ -47,14 +47,4 @@ class UserRequestValidatorTest extends Unit
     {
         $this->assertFalse($this->validator->isValidEmail(""));
     }
-
-    public function testIsValidName()
-    {
-        $this->assertTrue($this->validator->isValidName("zzzz"));
-    }
-
-    public function testIsNameInvalidWithEmptyString()
-    {
-        $this->assertFalse($this->validator->isValidName(""));
-    }
 }

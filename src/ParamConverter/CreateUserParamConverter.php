@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Validator\UserDataValidator;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
-class CreateUserConverter implements ParamConverterInterface
+class CreateUserParamConverter implements ParamConverterInterface
 {
     private UserDataValidator $validator;
     private UserRepository $userRepository;

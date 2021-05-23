@@ -11,16 +11,23 @@ class UserDataValidator
 
     public function isValidName(string $name): bool
     {
-        return !empty($name);
+        $hasSpaces = strpos($name, ' ');
+        $hasSpecialChars = strpos($name, '!');
+
+        return !empty($name) && !$hasSpaces && !$hasSpecialChars;
     }
 
     public function isValidEmail(string $email): bool
     {
-        return !empty($email) && preg_match(self::EMAILPATTERN, $email) === 1;
+        $isCorrectEmailFormat = preg_match(self::EMAILPATTERN, $email) === 1;
+
+        return !empty($email) && $isCorrectEmailFormat;
     }
 
     public function isValidPassword(string $password): bool
     {
-        return !empty($password) && preg_match(self::PATTERN, $password) === 1;
+        $isCorrectPasswordFormat = preg_match(self::PATTERN, $password) === 1;
+
+        return !empty($password) && $isCorrectPasswordFormat;
     }
 }
