@@ -22,7 +22,7 @@ class UserRequestValidatorTest extends \Codeception\Test\Unit
         $this->validator = new UserDataValidator();
     }
 
-    public function testValidPassword()
+    public function testIsPasswordValid()
     {
         $this->assertTrue($this->validator->isValidPassword("Az1"));
     }
@@ -37,9 +37,9 @@ class UserRequestValidatorTest extends \Codeception\Test\Unit
         $this->assertFalse($this->validator->isValidPassword(""));
     }
 
-    public function testValidateEmail()
+    public function testIsEmailValid()
     {
-        $this->assertTrue($this->validator->isValidEmail("zzzz"));
+        $this->assertTrue($this->validator->isValidEmail("test@test.pl"));
     }
 
     public function testIsEmailInvalidwithEmptyString()

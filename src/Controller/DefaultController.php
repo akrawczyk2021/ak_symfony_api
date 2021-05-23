@@ -20,8 +20,4 @@ class DefaultController extends AbstractController
             'name' => 'AK_SYMFONY_API',
         ]);
     }
-
-    
-
-
 }

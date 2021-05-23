@@ -5,32 +5,39 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
 use App\Request\CreateUser;
+use App\Request\ShowUser;
+use App\Transformer\SimpleUserListTransformer;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
     private UserPasswordEncoderInterface $encoder;
+    private UserRepository $userRepository;
 
-    public function __construct(EntityManagerInterface $entityManager, UserPasswordEncoderInterface $encoder)
-    {
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        UserPasswordEncoderInterface $encoder,
+        UserRepository $userRepository
+    ) {
         $this->entityManager = $entityManager;
         $this->encoder = $encoder;
+        $this->userRepository = $userRepository;
     }
 
     /**
      * Create User
-     * @Route("/users",name="users_create",methods={"POST"})
-     * @ParamConverter("createuser", class="App\Request\CreateUser")
+     * @Route("/user",name="users_create",methods={"POST"})
      */
-    public function addUsers(CreateUser $createuser): Response
+    public function addUser(CreateUser $createuser): Response
     {
         try {
             $user = new User();
@@ -41,9 +48,31 @@ class UserController extends AbstractController
             $this->entityManager->persist($user);
             $this->entityManager->flush();
         } catch (\Exception $ex) {
-            return $this->json($ex->errorInfo, 404);
+            throw new BadRequestException("Database insert error");
         }
 
         return $this->json([], Response::HTTP_CREATED);
+    }
+
+    /**
+     * Show User
+     * @Route("/user/{id}",name="user_show",methods={"GET"})
+     */
+    public function showUser(ShowUser $showUser): Response
+    {
+        $users = ['users' => $showUser];
+
+        return $this->json($users, Response::HTTP_ACCEPTED);
+    }
+
+    /**
+     * Show User List
+     * @Route("/user",name="user_list",methods={"GET"})
+     */
+    public function showUserList(SimpleUserListTransformer $transformer): Response
+    {
+        $list = $transformer->transformCollectionToArray($this->userRepository->findAllIdNameOnly());
+
+        return $this->json($list, Response::HTTP_ACCEPTED);
     }
 }
