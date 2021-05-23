@@ -3,8 +3,9 @@
 namespace App\Tests;
 
 use App\Validator\UserDataValidator;
+use Codeception\Test\Unit;
 
-class UserRequestValidatorTest extends \Codeception\Test\Unit
+class UserRequestValidatorTest extends Unit
 {
 
     /**
