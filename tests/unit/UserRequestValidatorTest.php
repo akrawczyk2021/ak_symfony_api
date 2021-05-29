@@ -3,8 +3,9 @@
 namespace App\Tests;
 
 use App\Validator\UserDataValidator;
+use Codeception\Test\Unit;
 
-class UserRequestValidatorTest extends \Codeception\Test\Unit
+class UserRequestValidatorTest extends Unit
 {
 
     /**
@@ -45,15 +46,5 @@ class UserRequestValidatorTest extends \Codeception\Test\Unit
     public function testIsEmailInvalidwithEmptyString()
     {
         $this->assertFalse($this->validator->isValidEmail(""));
-    }
-
-    public function testIsValidName()
-    {
-        $this->assertTrue($this->validator->isValidName("zzzz"));
-    }
-
-    public function testIsNameInvalidWithEmptyString()
-    {
-        $this->assertFalse($this->validator->isValidName(""));
     }
 }
