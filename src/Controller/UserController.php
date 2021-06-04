@@ -75,4 +75,16 @@ class UserController extends AbstractController
 
         return $this->json($list, Response::HTTP_ACCEPTED);
     }
+
+    /**
+     * Delete User
+     * @Route("/user/{id}",name="user_delete",methods={"DELETE"})
+     */
+    public function deleteUser(User $user): Response
+    {
+        $this->entityManager->remove($user);
+        $this->entityManager->flush();
+
+        return $this->json([], Response::HTTP_OK);
+    }
 }
