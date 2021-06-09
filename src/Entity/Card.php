@@ -32,7 +32,7 @@ class Card
     /**
      * @ORM\Column(type="integer")
      */
-    private $att;
+    private $attack;
 
     /**
      * @ORM\Column(type="integer")
@@ -42,7 +42,7 @@ class Card
     /**
      * @ORM\Column(type="integer")
      */
-    private $deff;
+    private $defence;
 
     public function getId(): ?int
     {
@@ -73,14 +73,14 @@ class Card
         return $this;
     }
 
-    public function getAtt(): ?int
+    public function getAttack(): ?int
     {
-        return $this->att;
+        return $this->attack;
     }
 
-    public function setAtt(int $att): self
+    public function setAttack(int $attack): self
     {
-        $this->att = $att;
+        $this->attack = $attack;
 
         return $this;
     }
@@ -97,14 +97,14 @@ class Card
         return $this;
     }
 
-    public function getDeff(): ?int
+    public function getDefence(): ?int
     {
-        return $this->deff;
+        return $this->deffence;
     }
 
-    public function setDeff(int $deff): self
+    public function setDefence(int $defence): self
     {
-        $this->deff = $deff;
+        $this->defence = $defence;
 
         return $this;
     }
