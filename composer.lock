@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7655a48accceb807253d3cf939a2852b",
+    "content-hash": "f36eb09b0687122446c1ce3144ae14d0",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -6081,6 +6081,112 @@
             "time": "2020-10-21T16:48:15+00:00"
         },
         {
+            "name": "codeception/module-db",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Codeception/module-db.git",
+                "reference": "8c8076cd05d4db95798acd7dba2a56578210982c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Codeception/module-db/zipball/8c8076cd05d4db95798acd7dba2a56578210982c",
+                "reference": "8c8076cd05d4db95798acd7dba2a56578210982c",
+                "shasum": ""
+            },
+            "require": {
+                "codeception/codeception": "*@dev",
+                "php": ">=5.6.0 <9.0"
+            },
+            "conflict": {
+                "codeception/codeception": "<4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Bodnarchuk"
+                },
+                {
+                    "name": "Gintautas Miselis"
+                }
+            ],
+            "description": "DB module for Codeception",
+            "homepage": "http://codeception.com/",
+            "keywords": [
+                "codeception",
+                "database-testing",
+                "db-testing"
+            ],
+            "support": {
+                "issues": "https://github.com/Codeception/module-db/issues",
+                "source": "https://github.com/Codeception/module-db/tree/1.1.0"
+            },
+            "time": "2020-12-20T13:37:07+00:00"
+        },
+        {
+            "name": "codeception/module-doctrine2",
+            "version": "1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Codeception/module-doctrine2.git",
+                "reference": "a39cd444fac840c907d33d33bca83e57dd0e04d1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Codeception/module-doctrine2/zipball/a39cd444fac840c907d33d33bca83e57dd0e04d1",
+                "reference": "a39cd444fac840c907d33d33bca83e57dd0e04d1",
+                "shasum": ""
+            },
+            "require": {
+                "codeception/codeception": "^4.0",
+                "php": ">=5.6.0 <9.0"
+            },
+            "require-dev": {
+                "doctrine/annotations": "^1",
+                "doctrine/data-fixtures": "^1",
+                "doctrine/orm": "^2",
+                "ramsey/uuid-doctrine": "^1.5"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Bodnarchuk"
+                },
+                {
+                    "name": "Alex Kunin"
+                }
+            ],
+            "description": "Doctrine2 module for Codeception",
+            "homepage": "http://codeception.com/",
+            "keywords": [
+                "codeception",
+                "doctrine2"
+            ],
+            "support": {
+                "issues": "https://github.com/Codeception/module-doctrine2/issues",
+                "source": "https://github.com/Codeception/module-doctrine2/tree/1.1.1"
+            },
+            "time": "2020-11-26T06:56:31+00:00"
+        },
+        {
             "name": "codeception/module-phpbrowser",
             "version": "1.0.2",
             "source": {
@@ -6196,16 +6302,16 @@
         },
         {
             "name": "codeception/module-symfony",
-            "version": "2.0.2",
+            "version": "2.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codeception/module-symfony.git",
-                "reference": "0460f39ea37dcc0e0b24190ac9a42497a1992f56"
+                "reference": "cfb8c6cf801fa2797952c6c7a251689e56b60d8e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codeception/module-symfony/zipball/0460f39ea37dcc0e0b24190ac9a42497a1992f56",
-                "reference": "0460f39ea37dcc0e0b24190ac9a42497a1992f56",
+                "url": "https://api.github.com/repos/Codeception/module-symfony/zipball/cfb8c6cf801fa2797952c6c7a251689e56b60d8e",
+                "reference": "cfb8c6cf801fa2797952c6c7a251689e56b60d8e",
                 "shasum": ""
             },
             "require": {
@@ -6250,9 +6356,9 @@
             ],
             "support": {
                 "issues": "https://github.com/Codeception/module-symfony/issues",
-                "source": "https://github.com/Codeception/module-symfony/tree/2.0.2"
+                "source": "https://github.com/Codeception/module-symfony/tree/2.0.4"
             },
-            "time": "2021-04-15T10:53:59+00:00"
+            "time": "2021-06-07T04:08:28+00:00"
         },
         {
             "name": "codeception/module-webdriver",
@@ -9352,5 +9458,5 @@
         "ext-iconv": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.0.0"
 }

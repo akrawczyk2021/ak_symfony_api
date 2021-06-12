@@ -9,13 +9,12 @@ class CardRepository
 {
     private EntityManagerInterface $entityManager;
 
-    public function __construct(EntityManagerInterface $entitymanager)
+    public function __construct(EntityManagerInterface $entityManager)
     {
-        $this->entityManager = $entitymanager;
+        $this->entityManager = $entityManager;
     }
 
-    public function findOneByName(string $name): ?Card
-    {
-        return $this->entityManager->getRepository(Card::class)->findOneBy(['name' => $name]);
+    public function add(Card $card): void {
+        $this->entityManager->persist($card);
     }
 }

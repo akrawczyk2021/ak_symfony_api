@@ -27,32 +27,20 @@ class CreateCardParamConverter implements ParamConverterInterface
     public function apply(Request $request, ParamConverter $configuration)
     {
         $content = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
-        //dump($content);
-        //die();
-        if (
-            $this->validator->isValidName($content['name'])
-            && $this->validator->isValidIntStat($content['hp'])
-            && $this->validator->isValidIntStat($content['attack'])
-            && $this->validator->isValidIntStat($content['defense'])
-        ) {
-            $this->ensureNameIsUnique($content['name']);
-            $cardDTO = new CreateCard($content['name'], $content['description'], $content['attack'], $content['defense'], $content['hp']);
-        } else {
-            throw new BadRequestException("Wrong data");
-        }
+
+        $cardDTO = new CreateCard(
+            $content['name'],
+            $content['description'],
+            $content['attack'],
+            $content['defense'],
+            $content['hp']
+        );
 
         $request->attributes->set($configuration->getName(), $cardDTO);
     }
 
     public function supports(ParamConverter $configuration)
     {
-        App\Entity\Card::class === $configuration->getClass();
-    }
-
-    private function ensureNameIsUnique(string $name): void
-    {
-        if ($this->cardRepository->findOneByName($name)) {
-            throw new BadRequestException("Name is already in use");
-        }
+        return CreateCard::class === $configuration->getClass();
     }
 }

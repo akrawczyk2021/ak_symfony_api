@@ -22,7 +22,7 @@ class CardDataValidator
 
     public function isValidIntStat(int $stat): bool
     {
-        $isCorrectType = $stat instanceof int;
+        $isCorrectType = is_int($stat);
 
         return !empty($attack) && $isCorrectType;
     }
