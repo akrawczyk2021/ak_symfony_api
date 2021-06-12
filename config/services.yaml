@@ -31,4 +31,10 @@ services:
           arguments:
               - '@App\Validator\UserDataValidator'  
           tags:           
-              - { name: request.param_converter, priority: -2, converter: create_user_param_converter }         
+              - { name: request.param_converter, priority: -2, converter: create_user_param_converter }      
+    #create_card_param_converter:         
+    #      class: App\ParamConverter\CreateCardParamConverter
+    #      arguments:
+    #          - '@App\Validator\CardDataValidator'  
+    #      tags:           
+    #          - { name: request.param_converter, priority: -2, converter: create_card_param_converter }     

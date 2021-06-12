@@ -42,7 +42,7 @@ class Card
     /**
      * @ORM\Column(type="integer")
      */
-    private $defence;
+    private $defense;
 
     public function getId(): ?int
     {
@@ -97,14 +97,14 @@ class Card
         return $this;
     }
 
-    public function getDefence(): ?int
+    public function getDefense(): ?int
     {
-        return $this->deffence;
+        return $this->deffense;
     }
 
-    public function setDefence(int $defence): self
+    public function setDefense(int $defense): self
     {
-        $this->defence = $defence;
+        $this->defense = $defense;
 
         return $this;
     }
