@@ -14,27 +14,26 @@ services:
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:
-        resource: '../src/'
+        resource: '%kernel.project_dir%/src/*'
         exclude:
-            - '../src/DependencyInjection/'
-            - '../src/Entity/'
-            - '../src/Kernel.php'
-            - '../src/Tests/'
+            - '%kernel.project_dir%/src/DependencyInjection/'
+            - '%kernel.project_dir%/src/Entity/'
+            - '%kernel.project_dir%/src/Kernel.php'
+            - '%kernel.project_dir%/src/Tests/'
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
     App\Controller\:
-        resource: '../src/Controller/'
+        resource: '%kernel.project_dir%/src/Controller/'
         tags: ['controller.service_arguments']
+
     create_user_param_converter:         
           class: App\ParamConverter\CreateUserParamConverter
           arguments:
               - '@App\Validator\UserDataValidator'  
           tags:           
               - { name: request.param_converter, priority: -2, converter: create_user_param_converter }      
-    #create_card_param_converter:         
-    #      class: App\ParamConverter\CreateCardParamConverter
-    #      arguments:
-    #          - '@App\Validator\CardDataValidator'  
-    #      tags:           
-    #          - { name: request.param_converter, priority: -2, converter: create_card_param_converter }     
+
+    App\ParamConverter\CreateCardParamConverter:          
+          tags:           
+              - { name: request.param_converter, priority: -2, converter: App\ParamConverter\CreateCardParamConverter}     
