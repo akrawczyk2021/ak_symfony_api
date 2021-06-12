@@ -34,7 +34,7 @@ class CardController extends AbstractController
 
     private function createCard(CreateCard $createCard): void
     {
-        $this->ensureUniqueName($createCard);
+        $this->ensureUniqueCardName($createCard);
 
         $card = new Card(
             $createCard->getName(),
@@ -43,11 +43,10 @@ class CardController extends AbstractController
             $createCard->getDefense(),
         );
         $card->setDescription($createCard->getDescription());
-
         $this->repository->add($card);
     }
 
-    private function ensureUniqueName(CreateCard $createCard): void
+    private function ensureUniqueCardName(CreateCard $createCard)
     {
         $repository = $this->entityManager->getRepository(Card::class);
 
