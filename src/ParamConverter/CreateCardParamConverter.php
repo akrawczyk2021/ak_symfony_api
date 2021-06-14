@@ -27,8 +27,7 @@ class CreateCardParamConverter implements ParamConverterInterface
     public function apply(Request $request, ParamConverter $configuration)
     {
         $content = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
-        //dump($content);
-        //die();
+        
         if (
             $this->validator->isValidName($content['name'])
             && $this->validator->isValidIntStat((int)$content['hp'])

@@ -17,4 +17,9 @@ class CardRepository
     public function add(Card $card): void {
         $this->entityManager->persist($card);
     }
+
+    public function findOneByName(string $name): ?Card
+    {
+        return $this->entityManager->getRepository(Card::class)->findOneBy(['name' => $name]);
+    }
 }
