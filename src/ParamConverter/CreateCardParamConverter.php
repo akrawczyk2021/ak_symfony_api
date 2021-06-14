@@ -31,12 +31,12 @@ class CreateCardParamConverter implements ParamConverterInterface
         //die();
         if (
             $this->validator->isValidName($content['name'])
-            && $this->validator->isValidIntStat($content['hp'])
-            && $this->validator->isValidIntStat($content['attack'])
-            && $this->validator->isValidIntStat($content['defense'])
+            && $this->validator->isValidIntStat((int)$content['hp'])
+            && $this->validator->isValidIntStat((int)$content['attack'])
+            && $this->validator->isValidIntStat((int)$content['defense'])
         ) {
             $this->ensureNameIsUnique($content['name']);
-            $cardDTO = new CreateCard($content['name'], $content['description'], $content['attack'], $content['defense'], $content['hp']);
+            $cardDTO = new CreateCard($content['name'], $content['description'], (int)$content['attack'], (int)$content['defense'], (int)$content['hp']);
         } else {
             throw new BadRequestException("Wrong data");
         }
@@ -46,7 +46,7 @@ class CreateCardParamConverter implements ParamConverterInterface
 
     public function supports(ParamConverter $configuration)
     {
-        App\Entity\Card::class === $configuration->getClass();
+        return CreateCard::class === $configuration->getClass();
     }
 
     private function ensureNameIsUnique(string $name): void
