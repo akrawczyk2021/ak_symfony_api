@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Card;
 use App\Repository\CardRepository;
 use App\Request\CreateCard;
 use Codeception\Util\HttpCode;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -28,5 +30,17 @@ class CardController extends AbstractController
         $this->entityManager->flush();
 
         return $this->json([], HttpCode::CREATED);
+    }
+
+    /**
+     * Delete Card
+     * @Route("/card/{name}",name="card_delete",methods={"DELETE"})
+     */
+    public function deleteCard(Card $card): Response
+    {
+        $this->entityManager->remove($card);
+        $this->entityManager->flush();
+
+        return $this->json([], Response::HTTP_OK);
     }
 }
