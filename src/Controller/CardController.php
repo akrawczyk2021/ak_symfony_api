@@ -10,9 +10,9 @@ use App\Request\CreateCard;
 use Codeception\Util\HttpCode;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Request\ShowCard;
 
 class CardController extends AbstractController
 {
@@ -42,5 +42,16 @@ class CardController extends AbstractController
         $this->entityManager->flush();
 
         return $this->json([], Response::HTTP_OK);
+    }
+
+    /**
+     * Show Card
+     * @Route("/card/{name}",name="card_show",methods={"GET"})
+     */
+    public function showCard(ShowCard $showCard): Response
+    {
+        $card = ['card' => $showCard];
+
+        return $this->json($card, Response::HTTP_OK);
     }
 }
