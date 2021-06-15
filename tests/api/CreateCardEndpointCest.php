@@ -57,4 +57,84 @@ class CreateCardEndpointCest
 
         $I->seeResponseCodeIs(HttpCode::BAD_REQUEST);
     }
+
+    public function testItThrowBadRequestWithSpaceInName(ApiTester $I)
+    {
+        $I->sendPost(
+            '/card',
+            [
+                'name' => "test space",
+                'description' => 'Low level monster',
+                'hp' => 10,
+                'attack' => 1,
+                'defense' => 1,
+            ]
+        );
+
+        $I->seeResponseCodeIs(HttpCode::BAD_REQUEST);
+    }
+
+    public function testItThrowBadRequestWithNegativeStatValue(ApiTester $I)
+    {
+        $I->sendPost(
+            '/card',
+            [
+                'name' => "Monster",
+                'description' => 'Low level monster',
+                'hp' => 10,
+                'attack' => -1,
+                'defense' => 1,
+            ]
+        );
+
+        $I->seeResponseCodeIs(HttpCode::BAD_REQUEST);
+    }
+
+    public function testItThrowBadRequestWithEmptyStatValue(ApiTester $I)
+    {
+        $I->sendPost(
+            '/card',
+            [
+                'name' => "Monster",
+                'description' => 'Low level monster',
+                'hp' => null,
+                'attack' => -1,
+                'defense' => 1,
+            ]
+        );
+
+        $I->seeResponseCodeIs(HttpCode::BAD_REQUEST);
+    }
+
+    public function testItThrowBadRequestWithEmptyName(ApiTester $I)
+    {
+        $I->sendPost(
+            '/card',
+            [
+                'name' => "",
+                'description' => 'Low level monster',
+                'hp' => 1,
+                'attack' => 1,
+                'defense' => 1,
+            ]
+        );
+
+        $I->seeResponseCodeIs(HttpCode::BAD_REQUEST);
+    }
+
+    public function testItThrowBadRequestWithEmptyDescription(ApiTester $I)
+    {
+        $I->sendPost(
+            '/card',
+            [
+                'name' => "Monster",
+                'description' => '',
+                'hp' => 1,
+                'attack' => 1,
+                'defense' => 1,
+            ]
+        );
+
+        $I->seeResponseCodeIs(HttpCode::BAD_REQUEST);
+    }
 }

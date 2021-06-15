@@ -4,9 +4,18 @@ declare(strict_types=1);
 
 namespace App\Validator;
 
+use App\Repository\CardRepository;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class CardDataValidator
 {
+    private $cardRepository;
+
+    public function __construct(CardRepository $repository)
+    {
+        $this->cardRepository = $repository;
+    }
+
     public function isValidName(string $name): bool
     {
         $hasSpaces = strpos($name, ' ');
@@ -22,8 +31,22 @@ class CardDataValidator
 
     public function isValidIntStat(int $stat): bool
     {
-        return !empty($stat);
+        return $stat >= 0;
     }
-    
-    
+
+    public function ensureNameIsUnique(string $name): void
+    {
+        if ($this->cardRepository->findOneByName($name)) {
+            throw new BadRequestException("Name is already in use");
+        }
+    }
+
+    public function isCardDataValid(string $name, string $description, int $attack, int $defence, int $hp): bool
+    {
+        return $this->isValidName($name)
+            && $this->isValidDescription($description)
+            && $this->isValidIntStat($attack)
+            && $this->isValidIntStat($defence)
+            && $this->isValidIntStat($hp);
+    }
 }
