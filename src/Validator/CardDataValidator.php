@@ -13,15 +13,6 @@ class CardDataValidator
     {
     }
 
-    public function isCardDataValid(string $name, string $description, int $attack, int $defence, int $hp): bool
-    {
-        return $this->isValidName($name)
-            && $this->isValidDescription($description)
-            && $this->isValidIntStat($attack)
-            && $this->isValidIntStat($defence)
-            && $this->isValidIntStat($hp);
-    }
-
     public function isValidName(string $name): bool
     {
         $hasSpaces = strpos($name, ' ');
