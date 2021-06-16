@@ -33,108 +33,90 @@ class CreateCardEndpointCest
         );
     }
 
-    public function testItThrowBadRequestWithNotUniqueName(ApiTester $I)
+    /**
+     * @dataProvider badRequestTestCaseProvider
+     */
+    public function testCreateCardWithInvalidData(ApiTester $I, \Codeception\Example $example)
     {
-        $I->haveInRepository(
-            $existedCard = new Card(
-                'Goblin',
-                1,
-                1,
-                1,
-            )
-        );
+        foreach ($example['existedEntities'] as $entity) {
+            $I->haveInRepository($entity);
+        }
 
-        $I->sendPost(
-            '/card',
-            [
-                'name' => $existedCard->getName(),
-                'description' => 'Low level monster',
-                'hp' => 10,
-                'attack' => 1,
-                'defense' => 1,
-            ]
-        );
+        $I->sendPost('/card', $example['requestBody']);
 
         $I->seeResponseCodeIs(HttpCode::BAD_REQUEST);
     }
 
-    public function testItThrowBadRequestWithSpaceInName(ApiTester $I)
+    protected function badRequestTestCaseProvider(): array
     {
-        $I->sendPost(
-            '/card',
-            [
-                'name' => "test space",
-                'description' => 'Low level monster',
-                'hp' => 10,
-                'attack' => 1,
-                'defense' => 1,
+        return [
+            'With duplicated name' => [
+                'existedEntities' => [
+                    $existedCard = new Card(
+                        'Goblin',
+                        1,
+                        1,
+                        1,
+                    )
+                ],
+                'requestBody' => [
+                    'name' => $existedCard->getName(),
+                    'description' => 'Low level monster',
+                    'hp' => 10,
+                    'attack' => 1,
+                    'defense' => 1,
+                ]
+            ],
+            'With space in name' => [
+                'existedEntities' => [],
+                'requestBody' => [
+                    'name' => "test space",
+                    'description' => 'Low level monster',
+                    'hp' => 10,
+                    'attack' => 1,
+                    'defense' => 1,
+                ]
+            ],
+            'With negative value' => [
+                'existedEntities' => [],
+                'requestBody' => [
+                    'name' => "Monster",
+                    'description' => 'Low level monster',
+                    'hp' => 10,
+                    'attack' => -1,
+                    'defense' => 1,
+                ]
+            ],
+            'With empty stat value' => [
+                'existedEntities' => [],
+                'requestBody' => [
+                    'name' => "Monster",
+                    'description' => 'Low level monster',
+                    'hp' => null,
+                    'attack' => -1,
+                    'defense' => 1,
+                ]
+            ],
+            'With empty name' => [
+                'existedEntities' => [],
+                'requestBody' => [
+                    'name' => "",
+                    'description' => 'Low level monster',
+                    'hp' => 1,
+                    'attack' => 1,
+                    'defense' => 1,
+                ]
+            ],
+            'With empty description' => [
+                'existedEntities' => [],
+                'requestBody' => [
+                    'name' => "Monster",
+                    'description' => '',
+                    'hp' => 1,
+                    'attack' => 1,
+                    'defense' => 1,
+                ]
             ]
-        );
-
-        $I->seeResponseCodeIs(HttpCode::BAD_REQUEST);
-    }
-
-    public function testItThrowBadRequestWithNegativeStatValue(ApiTester $I)
-    {
-        $I->sendPost(
-            '/card',
-            [
-                'name' => "Monster",
-                'description' => 'Low level monster',
-                'hp' => 10,
-                'attack' => -1,
-                'defense' => 1,
-            ]
-        );
-
-        $I->seeResponseCodeIs(HttpCode::BAD_REQUEST);
-    }
-
-    public function testItThrowBadRequestWithEmptyStatValue(ApiTester $I)
-    {
-        $I->sendPost(
-            '/card',
-            [
-                'name' => "Monster",
-                'description' => 'Low level monster',
-                'hp' => null,
-                'attack' => -1,
-                'defense' => 1,
-            ]
-        );
-
-        $I->seeResponseCodeIs(HttpCode::BAD_REQUEST);
-    }
-
-    public function testItThrowBadRequestWithEmptyName(ApiTester $I)
-    {
-        $I->sendPost(
-            '/card',
-            [
-                'name' => "",
-                'description' => 'Low level monster',
-                'hp' => 1,
-                'attack' => 1,
-                'defense' => 1,
-            ]
-        );
-
-        $I->seeResponseCodeIs(HttpCode::BAD_REQUEST);
-    }
-
-    public function testItThrowBadRequestWithEmptyDescription(ApiTester $I)
-    {
-        $I->sendPost(
-            '/card',
-            [
-                'name' => "Monster",
-                'description' => '',
-                'hp' => 1,
-                'attack' => 1,
-                'defense' => 1,
-            ]
-        );
-
-        $I->seeResponseCodeIs(HttpCode::BAD_REQUEST);
+        ];
     }
 }
