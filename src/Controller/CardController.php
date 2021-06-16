@@ -1,0 +1,57 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Controller;
+
+use App\Repository\CardRepository;
+use App\Request\CreateCard;
+use App\Entity\Card;
+use App\Exception\NotUniqueCardnameException;
+use App\Validator\CardDataValidator;
+use Codeception\Util\HttpCode;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class CardController extends AbstractController
+{
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private CardRepository $repository,
+        private CardDataValidator $validator
+    ) {
+    }
+
+    /**
+     * @Route("/card",name="card_create",methods={"POST"})
+     */
+    public function addCard(CreateCard $createCard): Response
+    {
+        try {
+            $this->createCard($createCard);
+            $this->entityManager->flush();
+        } catch (NotUniqueCardnameException $e) {
+            throw new BadRequestException($e->getMessage());
+        }
+
+        return $this->json([], HttpCode::CREATED);
+    }
+
+    private function createCard(CreateCard $createCard): void
+    {
+        $this->validator->ensureNameIsUnique($createCard->getName());
+
+        $card = new Card(
+            $createCard->getName(),
+            $createCard->getHp(),
+            $createCard->getAttack(),
+            $createCard->getDefense(),
+        );
+        $card->setDescription($createCard->getDescription());
+
+        $this->repository->add($card);
+    }
+}

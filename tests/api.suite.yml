@@ -1,6 +1,21 @@
 actor: ApiTester
 modules:
-    enabled:
-        - REST:
-            url: http://localhost
-            depends: PhpBrowser
+  enabled:
+    - Doctrine2:
+        depends: Symfony
+        cleanup: false
+    - Symfony:
+        app_path: 'src'
+        environment: 'test'
+    - REST:
+        url: /
+        depends: Symfony
+    - Db:
+        dsn: 'mysql:host=mysql;dbname=symfonyak'
+        user: 'root'
+        password: 'haslo'
+        populate: true
+        populator: 'php bin/console d:m:m --no-interaction --allow-no-migration'
+        cleanup: true
+    - App\Tests\Helper\Api
+    

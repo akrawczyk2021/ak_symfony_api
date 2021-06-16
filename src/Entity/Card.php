@@ -17,32 +17,41 @@ class Card
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="string",length=255)
      */
-    private $name;
+    private string $name;
 
     /**
      * @ORM\Column(type="string",length=255)
      */
-    private $description;
+    private string $description;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $attack;
+    private int $attack;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $hp;
+    private int $hp;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $defence;
+    private int $defense;
+
+    public function __construct(string $name, int $hp, int $attack, int $defense)
+    {
+        $this->name = $name;
+        $this->hp = $hp;
+        $this->attack = $attack;
+        $this->defense = $defense;
+        $this->description = '';
+    }
 
     public function getId(): ?int
     {
@@ -97,14 +106,14 @@ class Card
         return $this;
     }
 
-    public function getDefence(): ?int
+    public function getDefense(): ?int
     {
-        return $this->deffence;
+        return $this->defense;
     }
 
-    public function setDefence(int $defence): self
+    public function setDefense(int $defense): self
     {
-        $this->defence = $defence;
+        $this->defense = $defense;
 
         return $this;
     }

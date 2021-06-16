@@ -22,7 +22,7 @@ class ShowUserParamConverter implements ParamConverterInterface
 
     public function apply(Request $request, ParamConverter $configuration)
     {
-        $user = $this->userRepository->find((int)$request->get('id'));
+        $user = $this->userRepository->find((int) $request->get('id'));
         if (!$user) {
             throw new NotFoundHttpException("No user found");
         }
@@ -30,7 +30,7 @@ class ShowUserParamConverter implements ParamConverterInterface
         $request->attributes->set($configuration->getName(), $showUser);
     }
 
-    public function supports(ParamConverter $configuration)
+    public function supports(ParamConverter $configuration): bool
     {
         return ShowUser::class === $configuration->getClass();
     }
