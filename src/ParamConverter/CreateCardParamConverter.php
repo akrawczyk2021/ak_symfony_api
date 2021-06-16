@@ -8,13 +8,12 @@ use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInte
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
 use App\Validator\CardDataValidator;
-use App\Repository\CardRepository;
 use App\Request\CreateCard;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class CreateCardParamConverter implements ParamConverterInterface
 {
-    private mixed $content;
+    private array $content;
 
     public function __construct(private CardDataValidator $validator)
     {
@@ -64,8 +63,6 @@ class CreateCardParamConverter implements ParamConverterInterface
 
     private function getIntStat(mixed $content, string $statName): int
     {
-        //dump($content);
-        //die();
         if (!array_key_exists($statName,$content)){
             throw new BadRequestException("Field " . $statName . " is missing");
         }
