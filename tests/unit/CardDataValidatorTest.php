@@ -4,15 +4,14 @@ namespace App\Tests;
 
 use App\Repository\CardRepository;
 use App\Validator\CardDataValidator;
-use Exception;
 
 class CardDataValidatorTest extends \Codeception\Test\Unit
 {
     /**
      * @var \App\Tests\UnitTester
      */
-    protected $tester;
-    private $validator;
+    protected UnitTester $tester;
+    private CardDataValidator $validator;
 
     protected function _before()
     {
@@ -100,7 +99,7 @@ class CardDataValidatorTest extends \Codeception\Test\Unit
      * @param int $value
      * @dataProvider incorrectStatValuesDataProvider
      */
-    public function testIsIntStatInvalidWithInorrectData(int $value)
+    public function testIsIntStatInvalidWithIncorrectData(int $value)
     {
         $this->assertFalse($this->validator->isValidIntStat($value));
     }
@@ -111,7 +110,6 @@ class CardDataValidatorTest extends \Codeception\Test\Unit
             'nagative value' => [
                 'attack' => -5
             ],
-
         ];
     }
 }

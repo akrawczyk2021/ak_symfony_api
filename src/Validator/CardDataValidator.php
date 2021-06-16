@@ -9,11 +9,17 @@ use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class CardDataValidator
 {
-    private $cardRepository;
-
-    public function __construct(CardRepository $repository)
+    public function __construct(private CardRepository $cardRepository)
     {
-        $this->cardRepository = $repository;
+    }
+
+    public function isCardDataValid(string $name, string $description, int $attack, int $defence, int $hp): bool
+    {
+        return $this->isValidName($name)
+            && $this->isValidDescription($description)
+            && $this->isValidIntStat($attack)
+            && $this->isValidIntStat($defence)
+            && $this->isValidIntStat($hp);
     }
 
     public function isValidName(string $name): bool
@@ -41,12 +47,4 @@ class CardDataValidator
         }
     }
 
-    public function isCardDataValid(string $name, string $description, int $attack, int $defence, int $hp): bool
-    {
-        return $this->isValidName($name)
-            && $this->isValidDescription($description)
-            && $this->isValidIntStat($attack)
-            && $this->isValidIntStat($defence)
-            && $this->isValidIntStat($hp);
-    }
 }

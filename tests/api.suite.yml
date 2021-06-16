@@ -18,3 +18,4 @@ modules:
         populator: 'php bin/console d:m:m --no-interaction --allow-no-migration'
         cleanup: true
     - App\Tests\Helper\Api
+    
