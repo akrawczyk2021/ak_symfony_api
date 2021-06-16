@@ -37,5 +37,4 @@ class CardDataValidator
             throw new BadRequestException("Name is already in use");
         }
     }
-
 }
