@@ -21,6 +21,7 @@ services:
             - '%kernel.project_dir%/src/Kernel.php'
             - '%kernel.project_dir%/src/Tests/'
             - '%kernel.project_dir%/src/Entity/'
+            - '%kernel.project_dir%/src/Exception/'
             
 
     # controllers are imported separately to make sure services can be injected

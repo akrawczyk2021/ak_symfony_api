@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Validator;
 
+use App\Exception\NotUniqueCardnameException;
 use App\Repository\CardRepository;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class CardDataValidator
 {
@@ -34,7 +34,7 @@ class CardDataValidator
     public function ensureNameIsUnique(string $name): void
     {
         if ($this->cardRepository->findOneByName($name)) {
-            throw new BadRequestException("Name is already in use");
+            throw new NotUniqueCardnameException('Card name already exists!');
         }
     }
 }

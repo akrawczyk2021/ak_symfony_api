@@ -3,9 +3,9 @@
 namespace App\Tests;
 
 use App\Entity\Card;
+use App\Exception\NotUniqueCardnameException;
 use App\Repository\CardRepository;
 use App\Validator\CardDataValidator;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class CardDataValidatorTest extends \Codeception\Test\Unit
 {
@@ -121,7 +121,7 @@ class CardDataValidatorTest extends \Codeception\Test\Unit
         $repository->method('findOneByName')->willReturn(new Card($cardName = 'Goblin', 1, 1, 1));
         $validator = new CardDataValidator($repository);
 
-        $this->expectException(BadRequestException::class);
+        $this->expectException(NotUniqueCardnameException::class);
 
         $validator->ensureNameIsUnique($cardName);
     }
