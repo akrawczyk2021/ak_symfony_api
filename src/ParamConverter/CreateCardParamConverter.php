@@ -39,7 +39,7 @@ class CreateCardParamConverter implements ParamConverterInterface
         return CreateCard::class === $configuration->getClass();
     }
 
-    private function getName(mixed $content): string
+    private function getName(array $content): string
     {
         $this->validator->ensureNameIsUnique($content['name']);
         if ($this->validator->isValidName($content['name'])) {
@@ -49,7 +49,7 @@ class CreateCardParamConverter implements ParamConverterInterface
         }
     }
 
-    private function getDescription(mixed $content): string
+    private function getDescription(array $content): string
     {
         if (!array_key_exists('description',$content)){
             throw new BadRequestException("Field Description is missing");
@@ -61,7 +61,7 @@ class CreateCardParamConverter implements ParamConverterInterface
         }
     }
 
-    private function getIntStat(mixed $content, string $statName): int
+    private function getIntStat(array $content, string $statName): int
     {
         if (!array_key_exists($statName,$content)){
             throw new BadRequestException("Field " . $statName . " is missing");
