@@ -52,6 +52,9 @@ class CreateCardParamConverter implements ParamConverterInterface
 
     private function getDescription(mixed $content): string
     {
+        if (!array_key_exists('description',$content)){
+            throw new BadRequestException("Field Description is missing");
+        }
         if ($this->validator->isValidDescription($content['description'])) {
             return $content['description'];
         } else {
@@ -61,7 +64,12 @@ class CreateCardParamConverter implements ParamConverterInterface
 
     private function getIntStat(mixed $content, string $statName): int
     {
-        if ($this->validator->isValidIntStat((int)$content[$statName])) {
+        //dump($content);
+        //die();
+        if (!array_key_exists($statName,$content)){
+            throw new BadRequestException("Field " . $statName . " is missing");
+        }
+       if ($this->validator->isValidIntStat((int)$content[$statName])) {
             return (int)$content[$statName];
         } else {
             throw new BadRequestException("Wrong value for " . $statName . " field");

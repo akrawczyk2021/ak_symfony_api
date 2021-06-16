@@ -2,8 +2,10 @@
 
 namespace App\Tests;
 
+use App\Entity\Card;
 use App\Repository\CardRepository;
 use App\Validator\CardDataValidator;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class CardDataValidatorTest extends \Codeception\Test\Unit
 {
@@ -111,5 +113,26 @@ class CardDataValidatorTest extends \Codeception\Test\Unit
                 'attack' => -5
             ],
         ];
+    }
+
+    public function testEnsureItThrowsExceptionWhenNameIsNotUnique()
+    {
+        $repository = $this->createMock(CardRepository::class);
+        $repository->method('findOneByName')->willReturn(new Card($cardName = 'Goblin', 1, 1, 1));
+        $validator = new CardDataValidator($repository);
+
+        $this->expectException(BadRequestException::class);
+
+        $validator->ensureNameIsUnique($cardName);
+    }
+
+    public function testEnsureThatItDoesntThrowExceptionWhenNameIsUnique()
+    {
+        $repository = $this->createMock(CardRepository::class);
+        $repository->method('findOneByName')->willReturn(null);
+        $validator = new CardDataValidator($repository);
+
+        $validator->ensureNameIsUnique("Goblin");
+        $this->assertTrue(true);
     }
 }
