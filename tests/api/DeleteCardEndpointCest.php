@@ -23,7 +23,7 @@ class DeleteCardEndpointCest
             )
         );
 
-        $I->sendDelete('card/Goblin');
+        $I->sendDelete('card/1');
         $I->seeResponseCodeIs(HttpCode::OK);
     }
 
@@ -38,7 +38,7 @@ class DeleteCardEndpointCest
             )
         );
 
-        $I->sendDelete('card/a b c');
+        $I->sendDelete('card/99999');
         $I->dontSeeResponseCodeIs(HttpCode::OK);
     }
 }

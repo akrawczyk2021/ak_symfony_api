@@ -57,7 +57,7 @@ class CardController extends AbstractController
 
     /**
      * Delete Card
-     * @Route("/card/{name}",name="card_delete",methods={"DELETE"})
+     * @Route("/card/{id}",name="card_delete",methods={"DELETE"})
      */
     public function deleteCard(Card $card): Response
     {
