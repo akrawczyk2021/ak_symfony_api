@@ -14,31 +14,17 @@ class DeleteCardEndpointCest
 
     public function testItDeleteCard(ApiTester $I)
     {
-        $I->haveInRepository(
-            $existedCard = new Card(
-                'Goblin',
-                1,
-                1,
-                1,
-            )
-        );
+        $cardid = $I->haveInDatabase('Card', ['name' => 'Goblin', 'description' => 'Low lvl', 'attack' => 1, 'defense' => 1, 'hp' => 1]);
 
-        $I->sendDelete('card/1');
+        $I->sendDelete('card/' . $cardid);
+
         $I->seeResponseCodeIs(HttpCode::OK);
     }
 
     public function testItThrowsErrorWhenCardNotFound(ApiTester $I)
     {
-        $I->haveInRepository(
-            $existedCard = new Card(
-                'Goblin',
-                1,
-                1,
-                1,
-            )
-        );
+        $I->sendDelete('card/21421');
 
-        $I->sendDelete('card/99999');
-        $I->dontSeeResponseCodeIs(HttpCode::OK);
+        $I->SeeResponseCodeIs(HttpCode::NOT_FOUND);
     }
 }
