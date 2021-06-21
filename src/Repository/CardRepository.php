@@ -23,4 +23,9 @@ class CardRepository
     {
         return $this->entityManager->getRepository(Card::class)->findOneBy(['name' => $name]);
     }
+
+    public function findOneById(int $id): ?Card
+    {
+        return $this->entityManager->getRepository(Card::class)->find($id);
+    }
 }

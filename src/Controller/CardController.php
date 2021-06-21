@@ -8,6 +8,7 @@ use App\Repository\CardRepository;
 use App\Request\CreateCard;
 use App\Entity\Card;
 use App\Exception\NotUniqueCardnameException;
+use App\Request\ShowCard;
 use App\Validator\CardDataValidator;
 use Codeception\Util\HttpCode;
 use Doctrine\ORM\EntityManagerInterface;
@@ -65,5 +66,16 @@ class CardController extends AbstractController
         $this->entityManager->flush();
 
         return $this->json([], Response::HTTP_OK);
+    }
+
+    /**
+     * Show Card
+     * @Route("/card/{id}",name="card_show",methods={"GET"})
+     */
+    public function showCard(ShowCard $showCard): Response
+    {
+        $card = ['card' => $showCard];
+
+        return $this->json($card, Response::HTTP_OK);
     }
 }
