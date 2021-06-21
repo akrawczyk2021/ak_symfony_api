@@ -54,4 +54,16 @@ class CardController extends AbstractController
 
         $this->repository->add($card);
     }
+
+    /**
+     * Delete Card
+     * @Route("/card/{id}",name="card_delete",methods={"DELETE"})
+     */
+    public function deleteCard(Card $card): Response
+    {
+        $this->entityManager->remove($card);
+        $this->entityManager->flush();
+
+        return $this->json([], Response::HTTP_OK);
+    }
 }
