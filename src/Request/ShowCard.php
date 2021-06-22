@@ -7,12 +7,18 @@ namespace App\Request;
 class ShowCard
 {
     public function __construct(
+        private int $cardId,
         private string $name,
         private string $description,
         private int $attack,
         private int $defense,
         private int $hp
     ) {
+    }
+
+    public function getCardId(): int
+    {
+        return $this->cardId;
     }
 
     public function getName(): string

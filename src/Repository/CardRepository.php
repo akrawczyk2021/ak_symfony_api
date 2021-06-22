@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Card;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CardRepository
 {
@@ -24,8 +25,13 @@ class CardRepository
         return $this->entityManager->getRepository(Card::class)->findOneBy(['name' => $name]);
     }
 
-    public function findOneById(int $id): ?Card
+    public function findOneById(int $id): Card
     {
-        return $this->entityManager->getRepository(Card::class)->find($id);
+        $card = $this->entityManager->getRepository(Card::class)->find($id);
+        if (!$card) {
+            throw new NotFoundHttpException();
+        } else {
+            return $card;
+        }
     }
 }

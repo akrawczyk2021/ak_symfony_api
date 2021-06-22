@@ -15,6 +15,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class CardController extends AbstractController
@@ -75,6 +76,10 @@ class CardController extends AbstractController
     public function showCard(ShowCard $showCard): Response
     {
         $card = ['card' => $showCard];
+        $card = $this->repository->findOneById($showCard->getCardId());
+        if ($card === null) {
+            throw new NotFoundHttpException();
+        }
 
         return $this->json($card, Response::HTTP_OK);
     }

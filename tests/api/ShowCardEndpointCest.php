@@ -8,13 +8,15 @@ use App\Entity\Card;
 
 class ShowCardEndpointCest
 {
-    public function _before(ApiTester $I)
-    {
-    }
-
     public function testItShowsCardDetails(ApiTester $I)
     {
-        $cardid = $I->haveInDatabase('Card', ['name' => 'GoblinTest', 'description' => 'Low lvl', 'attack' => 1, 'defense' => 1, 'hp' => 1]);
+        $cardid = $I->haveInDatabase('Card', [
+            'name' => 'GoblinTest',
+            'description' => 'Low lvl',
+            'attack' => 1,
+            'defense' => 1,
+            'hp' => 1
+        ]);
 
         $I->sendGet('card/' . $cardid);
 

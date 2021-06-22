@@ -23,10 +23,9 @@ class ShowCardParamConverter implements ParamConverterInterface
     public function apply(Request $request, ParamConverter $configuration)
     {
         $card = $this->cardRepository->findOneById((int)$request->get('id'));
-        if (!$card) {
-            throw new NotFoundHttpException("No user found");
-        }
+
         $showCard = new ShowCard(
+            (int)$request->get('id'),
             $card->getName(),
             $card->getDescription(),
             $card->getAttack(),
