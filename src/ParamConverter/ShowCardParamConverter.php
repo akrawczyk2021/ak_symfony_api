@@ -4,35 +4,38 @@ declare(strict_types=1);
 
 namespace App\ParamConverter;
 
-use App\Repository\CardRepository;
 use App\Request\ShowCard;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ShowCardParamConverter implements ParamConverterInterface
 {
-    private CardRepository $cardRepository;
-
-    public function __construct(CardRepository $cardRepository)
-    {
-        $this->cardRepository = $cardRepository;
-    }
-
     public function apply(Request $request, ParamConverter $configuration)
     {
-        $card = $this->cardRepository->findOneById((int)$request->get('id'));
+        $cardId = $this->getCardId($request);
 
-        $showCard = new ShowCard(
-            (int)$request->get('id'),
-            $card->getName(),
-            $card->getDescription(),
-            $card->getAttack(),
-            $card->getDefense(),
-            $card->getHp()
-        );
-        $request->attributes->set($configuration->getName(), $showCard);
+        $request->attributes->set($configuration->getName(), new ShowCard($cardId));
+    }
+
+    private function getCardId(Request $request): int
+    {
+        $cardId = $request->get('id');
+        if ($cardId === null) {
+            throw new BadRequestHttpException("Card id is required");
+        }
+
+        if (!is_numeric($cardId)) {
+            throw new BadRequestHttpException("Card id must be numeric");
+        }
+
+        $cardId = (int)$cardId;
+        if ($cardId <= 0) {
+            throw new BadRequestHttpException("Card id must be greater then 0");
+        }
+
+        return $cardId;
     }
 
     public function supports(ParamConverter $configuration): bool

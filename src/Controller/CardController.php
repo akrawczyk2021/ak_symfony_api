@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Repository\CardRepository;
 use App\Request\CreateCard;
 use App\Entity\Card;
+use App\Exception\CardNotFoundException;
 use App\Exception\NotUniqueCardnameException;
 use App\Request\ShowCard;
 use App\Validator\CardDataValidator;
@@ -75,10 +76,10 @@ class CardController extends AbstractController
      */
     public function showCard(ShowCard $showCard): Response
     {
-        $card = ['card' => $showCard];
-        $card = $this->repository->findOneById($showCard->getCardId());
-        if ($card === null) {
-            throw new NotFoundHttpException();
+        try {
+            $card = $this->repository->getById($showCard->getCardId());
+        } catch (CardNotFoundException $e) {
+            throw new NotFoundHttpException($e->getMessage());
         }
 
         return $this->json($card, Response::HTTP_OK);

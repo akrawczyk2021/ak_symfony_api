@@ -8,11 +8,11 @@ class ShowCard
 {
     public function __construct(
         private int $cardId,
-        private string $name,
-        private string $description,
-        private int $attack,
-        private int $defense,
-        private int $hp
+        // private string $name,
+        // private string $description,
+        // private int $attack,
+        // private int $defense,
+        // private int $hp
     ) {
     }
 
@@ -21,28 +21,28 @@ class ShowCard
         return $this->cardId;
     }
 
-    public function getName(): string
-    {
-        return $this->name;
-    }
+    // public function getName(): string
+    // {
+    //     return $this->name;
+    // }
 
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
+    // public function getDescription(): string
+    // {
+    //     return $this->description;
+    // }
 
-    public function getAttack(): int
-    {
-        return $this->attack;
-    }
+    // public function getAttack(): int
+    // {
+    //     return $this->attack;
+    // }
 
-    public function getDefense(): int
-    {
-        return $this->defense;
-    }
+    // public function getDefense(): int
+    // {
+    //     return $this->defense;
+    // }
 
-    public function getHp(): int
-    {
-        return $this->hp;
-    }
+    // public function getHp(): int
+    // {
+    //     return $this->hp;
+    // }
 }
