@@ -7,13 +7,16 @@ namespace App\Controller;
 use App\Repository\CardRepository;
 use App\Request\CreateCard;
 use App\Entity\Card;
+use App\Exception\CardNotFoundException;
 use App\Exception\NotUniqueCardnameException;
+use App\Request\ShowCard;
 use App\Validator\CardDataValidator;
 use Codeception\Util\HttpCode;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class CardController extends AbstractController
@@ -65,5 +68,20 @@ class CardController extends AbstractController
         $this->entityManager->flush();
 
         return $this->json([], Response::HTTP_OK);
+    }
+
+    /**
+     * Show Card
+     * @Route("/card/{id}",name="card_show",methods={"GET"})
+     */
+    public function showCard(ShowCard $showCard): Response
+    {
+        try {
+            $card = $this->repository->getById($showCard->getCardId());
+        } catch (CardNotFoundException $e) {
+            throw new NotFoundHttpException($e->getMessage());
+        }
+
+        return $this->json($card, Response::HTTP_OK);
     }
 }
