@@ -35,11 +35,6 @@ class EditCardParamConverter implements ParamConverterInterface
         $request->attributes->set($configuration->getName(), $cardDTO);
     }
 
-    public function supports(ParamConverter $configuration)
-    {
-        return EditCard::class === $configuration->getClass();
-    }
-
     private function getName(array $content): string
     {
         if ($this->validator->isValidName($content['name'])) {
@@ -71,5 +66,10 @@ class EditCardParamConverter implements ParamConverterInterface
         } else {
             throw new BadRequestException("Wrong value for " . $statName . " field");
         }
+    }
+    
+    public function supports(ParamConverter $configuration): bool
+    {
+        return EditCard::class === $configuration->getClass();
     }
 }
