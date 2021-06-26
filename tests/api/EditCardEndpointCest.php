@@ -51,28 +51,110 @@ class EditCardEndpointCest
         $I->seeResponseCodeIs(HttpCode::OK);
     }
 
-    public function testItThrowsExceptionWithInvalidData(ApiTester $I)
-    {
-        $cardId = $I->haveInDatabase('Card', [
-            'name' => 'Goblin',
-            'description' => 'Low LVL Monster',
-            'attack' => 1,
-            'defense' => 1,
-            'hp' => 1
-        ]);
 
-        $I->sendPut(
-            '/card/' . $cardId,
-            [
-                'name' => 'Goblin',
-                'description' => 'High level monster',
-                'hp' => '',
-                'attack' => 10,
-                'defense' => 10
-            ]
-        );
+    /**
+     * @dataProvider badRequestTestCaseProvider
+     */
+    public function testItEditCardWithInvalidData(ApiTester $I, \Codeception\Example $example)
+    {
+        foreach ($example['existedEntities'] as $entity) {
+            $cardId = $I->haveInRepository($entity);
+        }
+
+        $I->sendPut('/card/' . $cardId, $example['requestBody']);
 
         $I->seeResponseCodeIs(HttpCode::BAD_REQUEST);
+    }
+
+    protected function badRequestTestCaseProvider(): array
+    {
+        return [
+            'With space in name' => [
+                'existedEntities' => [
+                    $existedCard = new Card(
+                        'Goblin',
+                        1,
+                        1,
+                        1,
+                    )
+                ],
+                'requestBody' => [
+                    'name' => "test space",
+                    'description' => 'Low level monster',
+                    'hp' => 10,
+                    'attack' => 1,
+                    'defense' => 1,
+                ]
+            ],
+            'With negative value' => [
+                'existedEntities' => [
+                    $existedCard = new Card(
+                        'Goblin',
+                        1,
+                        1,
+                        1,
+                    )
+                ],
+                'requestBody' => [
+                    'name' => "Monster",
+                    'description' => 'Low level monster',
+                    'hp' => 10,
+                    'attack' => -1,
+                    'defense' => 1,
+                ]
+            ],
+            'With empty stat value' => [
+                'existedEntities' => [
+                    $existedCard = new Card(
+                        'Goblin',
+                        1,
+                        1,
+                        1,
+                    )
+                ],
+                'requestBody' => [
+                    'name' => "Monster",
+                    'description' => 'Low level monster',
+                    'hp' => null,
+                    'attack' => -1,
+                    'defense' => 1,
+                ]
+            ],
+            'With empty name' => [
+                'existedEntities' => [
+                    $existedCard = new Card(
+                        'Goblin',
+                        1,
+                        1,
+                        1,
+                    )
+                ],
+                'requestBody' => [
+                    'name' => "",
+                    'description' => 'Low level monster',
+                    'hp' => 1,
+                    'attack' => 1,
+                    'defense' => 1,
+                ]
+            ],
+            'With empty description' => [
+                'existedEntities' => [
+                    $existedCard = new Card(
+                        'Goblin',
+                        1,
+                        1,
+                        1,
+                    )
+                ],
+                'requestBody' => [
+                    'name' => "Monster",
+                    'description' => '',
+                    'hp' => 1,
+                    'attack' => 1,
+                    'defense' => 1,
+                ]
+            ]
+        ];
     }
 
     public function testItThrowsExceptionWithNonUniqueName(ApiTester $I)
