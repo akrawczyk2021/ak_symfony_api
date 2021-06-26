@@ -28,7 +28,7 @@ class CardDataValidator
 
     public function isValidIntStat(int $stat): bool
     {
-        return $stat >= 0;
+        return $stat > 0;
     }
 
     public function ensureNameIsUnique(string $name): void
