@@ -90,7 +90,7 @@ class CardController extends AbstractController
 
     /**
      * Edit Card
-     * @Route("/card/{id}",name="edit_card",methods={"PUT"})
+     * @Route("/card/{id}",name="edit_card",methods={"PATCH"})
      */
     public function editCard(EditCard $editCard, Request $request): Response
     {

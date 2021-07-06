@@ -13,23 +13,20 @@ use Symfony\Component\HttpFoundation\Request;
 
 class EditCardParamConverter implements ParamConverterInterface
 {
-
-    private array $content;
-
     public function __construct(private CardDataValidator $validator)
     {
     }
 
     public function apply(Request $request, ParamConverter $configuration)
     {
-        $this->content = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        $content = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
         $cardDTO = new EditCard(
-            $this->getName($this->content),
-            $this->getDescription($this->content),
-            $this->getIntStat($this->content, 'attack'),
-            $this->getIntStat($this->content, 'defense'),
-            $this->getIntStat($this->content, 'hp'),
+            $this->getName($content),
+            $this->getDescription($content),
+            $this->getIntStat($content, 'attack'),
+            $this->getIntStat($content, 'defense'),
+            $this->getIntStat($content, 'hp'),
         );
 
         $request->attributes->set($configuration->getName(), $cardDTO);
@@ -37,11 +34,11 @@ class EditCardParamConverter implements ParamConverterInterface
 
     private function getName(array $content): string
     {
-        if ($this->validator->isValidName($content['name'])) {
-            return $content['name'];
-        } else {
+        if (!$this->validator->isValidName($content['name'])) {
             throw new BadRequestException("Wrong value for Name field");
         }
+
+        return $content['name'];
     }
 
     private function getDescription(array $content): string
@@ -49,11 +46,11 @@ class EditCardParamConverter implements ParamConverterInterface
         if (!array_key_exists('description', $content)) {
             throw new BadRequestException("Field Description is missing");
         }
-        if ($this->validator->isValidDescription($content['description'])) {
-            return $content['description'];
-        } else {
+        if (!$this->validator->isValidDescription($content['description'])) {
             throw new BadRequestException("Wrong value for Description field");
         }
+        
+        return $content['description'];
     }
 
     private function getIntStat(array $content, string $statName): int
@@ -61,13 +58,13 @@ class EditCardParamConverter implements ParamConverterInterface
         if (!array_key_exists($statName, $content)) {
             throw new BadRequestException("Field " . $statName . " is missing");
         }
-        if ($this->validator->isValidIntStat((int)$content[$statName])) {
-            return (int)$content[$statName];
-        } else {
+        if (!$this->validator->isValidIntStat((int)$content[$statName])) {
             throw new BadRequestException("Wrong value for " . $statName . " field");
         }
+
+        return (int)$content[$statName];
     }
-    
+
     public function supports(ParamConverter $configuration): bool
     {
         return EditCard::class === $configuration->getClass();

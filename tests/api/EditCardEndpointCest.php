@@ -22,7 +22,7 @@ class EditCardEndpointCest
             'hp' => 1
         ]);
 
-        $I->sendPut(
+        $I->sendPatch(
             '/card/' . $cardId,
             [
                 'name' => 'Goblin',
@@ -61,7 +61,7 @@ class EditCardEndpointCest
             $cardId = $I->haveInRepository($entity);
         }
 
-        $I->sendPut('/card/' . $cardId, $example['requestBody']);
+        $I->sendPatch('/card/' . $cardId, $example['requestBody']);
 
         $I->seeResponseCodeIs(HttpCode::BAD_REQUEST);
     }
@@ -175,12 +175,12 @@ class EditCardEndpointCest
             'hp' => 1
         ]);
 
-        $I->sendPut(
+        $I->sendPatch(
             '/card/' . $cardId,
             [
                 'name' => 'Troll',
                 'description' => 'High level monster',
-                'hp' => '',
+                'hp' => 10,
                 'attack' => 10,
                 'defense' => 10
             ]
@@ -199,12 +199,12 @@ class EditCardEndpointCest
             'hp' => 1
         ]);
 
-        $I->sendPut(
+        $I->sendPatch(
             '/card/' . $cardId + 2123,
             [
                 'name' => 'Troll',
                 'description' => 'High level monster',
-                'hp' => '',
+                'hp' => 10,
                 'attack' => 10,
                 'defense' => 10
             ]
