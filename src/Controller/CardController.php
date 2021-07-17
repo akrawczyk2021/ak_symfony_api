@@ -96,10 +96,9 @@ class CardController extends AbstractController
      */
     public function editCard(EditCard $editCard): Response
     {
-        $cardUpdater = new CardUpdateHandler($editCard,$this->entityManager,$this->validator);
+        $cardUpdater = new CardUpdateHandler($editCard, $this->entityManager, $this->validator);
         $cardUpdater->handle();
 
         return $this->json([], Response::HTTP_OK);
     }
-    
 }
