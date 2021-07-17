@@ -91,9 +91,6 @@ class CardDataValidatorTest extends \Codeception\Test\Unit
             'Positive value' => [
                 'attack' => 5
             ],
-            'Zero' => [
-                'attack' => 0
-            ],
         ];
     }
 
@@ -111,6 +108,9 @@ class CardDataValidatorTest extends \Codeception\Test\Unit
         return [
             'nagative value' => [
                 'attack' => -5
+            ],
+            'Zero' => [
+                'attack' => 0
             ],
         ];
     }
