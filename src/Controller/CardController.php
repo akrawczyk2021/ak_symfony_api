@@ -19,6 +19,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -92,33 +93,35 @@ class CardController extends AbstractController
      * Edit Card
      * @Route("/card/{id}",name="edit_card",methods={"PATCH"})
      */
-    public function editCard(EditCard $editCard, Request $request): Response
+    public function editCard(EditCard $editCard): Response
     {
         try {
-            $existingCard = $this->repository->getById((int)$request->get('id'));
-        } catch (CardNotFoundException $e) {
-            throw new NotFoundHttpException($e->getMessage());
-        }
-
-        try {
-            $this->setCardNewValues($existingCard, $editCard);
+            $this->updateCard($editCard);
             $this->entityManager->flush();
         } catch (Exception $e) {
-            throw new BadRequestException("Something went wrong");
+            throw new BadRequestHttpException("Something went wrong");
         }
 
         return $this->json([], Response::HTTP_OK);
     }
 
-    private function setCardNewValues(Card $existingCard, EditCard $editCard): void
+    private function updateCard(EditCard $editCard): void
     {
-        if (strcmp($existingCard->getName(), $editCard->getName()) != 0) {
+        $existingCard = $editCard->getCardToChange();
+
+        if ($this->isNameChanged($existingCard, $editCard->getName())) {
             $this->validator->ensureNameIsUnique($editCard->getName());
         }
+
         $existingCard->setName($editCard->getName());
         $existingCard->setDescription($editCard->getDescription());
         $existingCard->setAttack($editCard->getAttack());
         $existingCard->setDefense($editCard->getDefense());
         $existingCard->setHp($editCard->getHp());
+    }
+
+    private function isNameChanged(Card $card, string $newName): bool
+    {
+        return strcmp($card->getName(), $newName) != 0;
     }
 }

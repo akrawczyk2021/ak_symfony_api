@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Request;
 
+use App\Entity\Card;
+
 class EditCard
 {
     public function __construct(
@@ -11,7 +13,8 @@ class EditCard
         private string $description,
         private int $attack,
         private int $defense,
-        private int $hp
+        private int $hp,
+        private Card $cardToChange
     ) {
     }
 
@@ -38,5 +41,10 @@ class EditCard
     public function getHp(): int
     {
         return $this->hp;
+    }
+
+    public function getCardToChange(): Card
+    {
+        return $this->$cardToChange;
     }
 }

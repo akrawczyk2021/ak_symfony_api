@@ -4,16 +4,22 @@ declare(strict_types=1);
 
 namespace App\ParamConverter;
 
+use App\Entity\Card;
+use App\Repository\CardRepository;
 use App\Request\EditCard;
 use App\Validator\CardDataValidator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class EditCardParamConverter implements ParamConverterInterface
 {
-    public function __construct(private CardDataValidator $validator)
+    public function __construct(
+        private CardDataValidator $validator, 
+        private CardRepository $cardRepository
+        )
     {
     }
 
@@ -27,6 +33,7 @@ class EditCardParamConverter implements ParamConverterInterface
             $this->getIntStat($content, 'attack'),
             $this->getIntStat($content, 'defense'),
             $this->getIntStat($content, 'hp'),
+            $this->getCardToChange($request)
         );
 
         $request->attributes->set($configuration->getName(), $cardDTO);
@@ -63,6 +70,27 @@ class EditCardParamConverter implements ParamConverterInterface
         }
 
         return (int)$content[$statName];
+    }
+
+    private function getCardToChange(Request $request): Card
+    {
+        $cardId = $request->get('id');
+        if ($cardId === null) {
+            throw new BadRequestHttpException("Card id is required");
+        }
+
+        if (!is_numeric($cardId)) {
+            throw new BadRequestHttpException("Card id must be numeric");
+        }
+
+        $cardId = (int)$cardId;
+        if ($cardId < 0) {
+            throw new BadRequestHttpException("Card id must be greater then 0");
+        }
+
+        $existngCard = $this->cardRepository->getById($cardId);
+
+        return $existngCard;
     }
 
     public function supports(ParamConverter $configuration): bool
