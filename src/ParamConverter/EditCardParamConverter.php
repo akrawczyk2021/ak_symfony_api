@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\ParamConverter;
 
 use App\Entity\Card;
+use App\Exception\CardNotFoundException;
 use App\Repository\CardRepository;
 use App\Request\EditCard;
 use App\Validator\CardDataValidator;
@@ -17,10 +18,9 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 class EditCardParamConverter implements ParamConverterInterface
 {
     public function __construct(
-        private CardDataValidator $validator, 
+        private CardDataValidator $validator,
         private CardRepository $cardRepository
-        )
-    {
+    ) {
     }
 
     public function apply(Request $request, ParamConverter $configuration)
@@ -56,7 +56,7 @@ class EditCardParamConverter implements ParamConverterInterface
         if (!$this->validator->isValidDescription($content['description'])) {
             throw new BadRequestException("Wrong value for Description field");
         }
-        
+
         return $content['description'];
     }
 
@@ -87,8 +87,11 @@ class EditCardParamConverter implements ParamConverterInterface
         if ($cardId < 0) {
             throw new BadRequestHttpException("Card id must be greater then 0");
         }
-
-        $existngCard = $this->cardRepository->getById($cardId);
+        try {
+            $existngCard = $this->cardRepository->getById($cardId);
+        } catch (CardNotFoundException $e) {
+            throw new BadRequestHttpException("Card not found");
+        }
 
         return $existngCard;
     }

@@ -9,6 +9,7 @@ use App\Request\CreateCard;
 use App\Entity\Card;
 use App\Exception\CardNotFoundException;
 use App\Exception\NotUniqueCardnameException;
+use App\Handler\CardUpdateHandler;
 use App\Request\EditCard;
 use App\Request\ShowCard;
 use App\Validator\CardDataValidator;
@@ -95,33 +96,10 @@ class CardController extends AbstractController
      */
     public function editCard(EditCard $editCard): Response
     {
-        try {
-            $this->updateCard($editCard);
-            $this->entityManager->flush();
-        } catch (Exception $e) {
-            throw new BadRequestHttpException("Something went wrong");
-        }
+        $cardUpdater = new CardUpdateHandler($editCard,$this->entityManager,$this->validator);
+        $cardUpdater->handle();
 
         return $this->json([], Response::HTTP_OK);
     }
-
-    private function updateCard(EditCard $editCard): void
-    {
-        $existingCard = $editCard->getCardToChange();
-
-        if ($this->isNameChanged($existingCard, $editCard->getName())) {
-            $this->validator->ensureNameIsUnique($editCard->getName());
-        }
-
-        $existingCard->setName($editCard->getName());
-        $existingCard->setDescription($editCard->getDescription());
-        $existingCard->setAttack($editCard->getAttack());
-        $existingCard->setDefense($editCard->getDefense());
-        $existingCard->setHp($editCard->getHp());
-    }
-
-    private function isNameChanged(Card $card, string $newName): bool
-    {
-        return strcmp($card->getName(), $newName) != 0;
-    }
+    
 }

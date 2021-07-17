@@ -45,6 +45,6 @@ class EditCard
 
     public function getCardToChange(): Card
     {
-        return $this->$cardToChange;
+        return $this->cardToChange;
     }
 }
