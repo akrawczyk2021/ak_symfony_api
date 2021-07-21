@@ -9,6 +9,8 @@ use App\Request\CreateCard;
 use App\Entity\Card;
 use App\Exception\CardNotFoundException;
 use App\Exception\NotUniqueCardnameException;
+use App\Handler\CardUpdateHandler;
+use App\Request\EditCard;
 use App\Request\ShowCard;
 use App\Validator\CardDataValidator;
 use Codeception\Util\HttpCode;
@@ -16,6 +18,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -24,7 +27,8 @@ class CardController extends AbstractController
     public function __construct(
         private EntityManagerInterface $entityManager,
         private CardRepository $repository,
-        private CardDataValidator $validator
+        private CardDataValidator $validator,
+        private CardUpdateHandler $cardUpdateHandler
     ) {
     }
 
@@ -83,5 +87,22 @@ class CardController extends AbstractController
         }
 
         return $this->json($card, Response::HTTP_OK);
+    }
+
+    /**
+     * Edit Card
+     * @Route("/card/{id}",name="edit_card",methods={"PATCH"})
+     */
+    public function editCard(EditCard $editCard): Response
+    {
+        try {
+            $this->cardUpdateHandler->handle($editCard);
+
+            $this->entityManager->flush();
+        } catch (NotUniqueCardnameException) {
+            throw new BadRequestHttpException("Card name must be unique");
+        }
+
+        return $this->json([], Response::HTTP_OK);
     }
 }

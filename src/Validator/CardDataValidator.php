@@ -28,9 +28,12 @@ class CardDataValidator
 
     public function isValidIntStat(int $stat): bool
     {
-        return $stat >= 0;
+        return $stat > 0;
     }
 
+    /**
+     * @throws NotUniqueCardnameException
+     */
     public function ensureNameIsUnique(string $name): void
     {
         if ($this->cardRepository->findOneByName($name)) {
