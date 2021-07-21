@@ -18,6 +18,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -94,9 +95,13 @@ class CardController extends AbstractController
      */
     public function editCard(EditCard $editCard): Response
     {
-     //   $cardUpdater = new CardUpdateHandler($editCard, $this->entityManager, $this->validator);
-        $this->cardUpdateHandler->handle($editCard);
-        $this->entityManager->flush();
+        try {
+            $this->cardUpdateHandler->handle($editCard);
+
+            $this->entityManager->flush();
+        } catch (NotUniqueCardnameException) {
+            throw new BadRequestHttpException("Card name must be unique");
+        }
 
         return $this->json([], Response::HTTP_OK);
     }
