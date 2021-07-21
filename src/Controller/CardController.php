@@ -26,7 +26,8 @@ class CardController extends AbstractController
     public function __construct(
         private EntityManagerInterface $entityManager,
         private CardRepository $repository,
-        private CardDataValidator $validator
+        private CardDataValidator $validator,
+        private CardUpdateHandler $cardUpdateHandler
     ) {
     }
 
@@ -93,8 +94,9 @@ class CardController extends AbstractController
      */
     public function editCard(EditCard $editCard): Response
     {
-        $cardUpdater = new CardUpdateHandler($editCard, $this->entityManager, $this->validator);
-        $cardUpdater->handle();
+     //   $cardUpdater = new CardUpdateHandler($editCard, $this->entityManager, $this->validator);
+        $this->cardUpdateHandler->handle($editCard);
+        $this->entityManager->flush();
 
         return $this->json([], Response::HTTP_OK);
     }

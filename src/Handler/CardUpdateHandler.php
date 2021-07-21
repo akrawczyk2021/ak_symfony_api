@@ -15,29 +15,27 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 class CardUpdateHandler
 {
     public function __construct(
-        private EditCard $editCard,
         private EntityManagerInterface $entityManager,
         private CardDataValidator $validator
     ) {
     }
 
-    public function handle(): void
+    public function handle(EditCard $editCard): void
     {
-        $existingCard = $this->editCard->getCardToChange();
+        $existingCard = $editCard->getCardToChange();
 
         try {
 
-            if ($this->isNameChanged($existingCard, $this->editCard->getName())) {
-                $this->validator->ensureNameIsUnique($this->editCard->getName());
+            if ($this->isNameChanged($existingCard, $editCard->getName())) {
+                $this->validator->ensureNameIsUnique($editCard->getName());
             }
 
-            $existingCard->setName($this->editCard->getName());
-            $existingCard->setDescription($this->editCard->getDescription());
-            $existingCard->setAttack($this->editCard->getAttack());
-            $existingCard->setDefense($this->editCard->getDefense());
-            $existingCard->setHp($this->editCard->getHp());
+            $existingCard->setName($editCard->getName());
+            $existingCard->setDescription($editCard->getDescription());
+            $existingCard->setAttack($editCard->getAttack());
+            $existingCard->setDefense($editCard->getDefense());
+            $existingCard->setHp($editCard->getHp());
 
-            $this->entityManager->flush();
         } catch (NotUniqueCardnameException $e) {
             throw new BadRequestHttpException("Card name already exists");
         } catch (Exception $e) {
